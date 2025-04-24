@@ -7,5 +7,8 @@ export default defineConfig({
     host: true, // 等同於 '0.0.0.0'，允許 LAN 存取
     port: 3000,
   },
+  build: {
+    outDir: 'dist',
+  },
   plugins: [react()],
 });
