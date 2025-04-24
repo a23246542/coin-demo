@@ -33,8 +33,9 @@ interface CoinRainProps {
 
 // 金幣 Lottie 動畫來源
 const COIN_LOTTIE_SRC =
+  // "https://lottie.host/11822c63-d1ab-4429-bec7-a5202c212ba4/4VXbEcwOdb.lottie";
   "https://lottie.host/e2b455a7-5733-418b-8b00-e1cf9684394a/ycvPKfDZJS.lottie";
-//   "https://lottie.host/931236a4-1a45-4f56-9d26-27bc31fa2683/w1iJh9Vv51.json";
+// "https://lottie.host/931236a4-1a45-4f56-9d26-27bc31fa2683/w1iJh9Vv51.json";
 
 /**
  * 單個金幣組件
@@ -45,7 +46,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
   // 為每個金幣生成隨機特性，使落下效果更自然
   const style = useMemo(() => {
     const randomLeft = Math.random() * 100; // 隨機水平位置 (0-100%)
-    const randomDelay = Math.random() * 1; // 隨機延遲開始 (0-5秒)
+    const randomDelay = Math.random() * 3; // 隨機延遲開始 (0-5秒)
     const randomDuration = 5 + Math.random() * 4; // 延長隨機落下時間 (5-9秒)
     // const randomSize = 40 + Math.random() * 60; // 隨機大小 (40-100px)
     const randomRotation = Math.random() * 360; // 隨機旋轉角度 (0-360度)
@@ -107,7 +108,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
    * @returns 是否成功計算
    */
   const calculateDuration = (dotLottie: DotLottie): boolean => {
-    console.log("calculateDuration");
+    console.log("calculateDuration", dotLottie);
 
     try {
       // 確保幀數有效
@@ -131,9 +132,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
         resetAtSecondPropRef.current !== undefined
           ? resetAtSecondPropRef.current
           : duration / 2;
-      //   const resetAtFrame = Math.floor(resetAtSecond * frameRate);
-      //   const resetAtFrame = totalFrames / 2;
-      const resetAtFrame = 60;
+      const resetAtFrame = Math.floor(resetAtSecond * frameRate);
 
       // 存儲資訊
       animInfoRef.current = {
@@ -141,7 +140,6 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
         totalFrames,
         frameRate,
         duration,
-        resetAtSecond,
         resetAtFrame,
         isReady: true,
       };
@@ -150,7 +148,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
         totalFrames,
         frameRate,
         duration: `${duration.toFixed(2)}秒`,
-        resetAtSecond: `${resetAtSecond.toFixed(2)}秒`,
+        resetAtSecond,
         resetAtFrame,
       });
 

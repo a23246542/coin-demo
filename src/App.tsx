@@ -18,7 +18,7 @@ function App() {
 
   return (
     <>
-      {showCoins && <CoinRain count={60} resetAtSecond={2} />}
+      {showCoins && <CoinRain count={30} resetAtSecond={2} />}
       <div className="container">
         {/* <div>
           <a href="https://vite.dev" target="_blank">
