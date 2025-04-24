@@ -1,0 +1,52 @@
+.coin-rain-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none; /* 讓金幣不會阻擋下方內容的點擊 */
+  z-index: 10;
+}
+
+.coin {
+  position: absolute;
+  top: -100px; /* 從螢幕上方開始 */
+  animation: fall linear forwards;
+  will-change: transform, opacity; /* 效能優化 */
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  90% {
+    top: calc(100vh - 50px);
+    /* transform: rotate(340deg); */
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(100vh + 100px)) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* 
+@keyframes fall {
+  0% {
+    top: -100px;
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  90% {
+    top: calc(100vh - 50px);
+    transform: rotate(340deg);
+    opacity: 1;
+  }
+  100% {
+    top: 100vh;
+    transform: rotate(360deg);
+    opacity: 0;
+  }
+} */
