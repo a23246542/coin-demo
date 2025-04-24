@@ -33,8 +33,8 @@ interface CoinRainProps {
 
 // 金幣 Lottie 動畫來源
 const COIN_LOTTIE_SRC =
-  // "https://lottie.host/11822c63-d1ab-4429-bec7-a5202c212ba4/4VXbEcwOdb.lottie";
-  "https://lottie.host/e2b455a7-5733-418b-8b00-e1cf9684394a/ycvPKfDZJS.lottie";
+  "https://lottie.host/11822c63-d1ab-4429-bec7-a5202c212ba4/4VXbEcwOdb.lottie"; //35fps 3s
+// "https://lottie.host/e2b455a7-5733-418b-8b00-e1cf9684394a/ycvPKfDZJS.lottie";
 // "https://lottie.host/931236a4-1a45-4f56-9d26-27bc31fa2683/w1iJh9Vv51.json";
 
 /**
@@ -49,7 +49,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
     const randomDelay = Math.random() * 3; // 隨機延遲開始 (0-5秒)
     const randomDuration = 5 + Math.random() * 4; // 延長隨機落下時間 (5-9秒)
     // const randomSize = 40 + Math.random() * 60; // 隨機大小 (40-100px)
-    const randomRotation = Math.random() * 360; // 隨機旋轉角度 (0-360度)
+    // const randomRotation = Math.random() * 360; // 隨機旋轉角度 (0-360度)
 
     return {
       left: `${randomLeft}%`,
@@ -57,7 +57,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
       animationDuration: `${randomDuration}s`,
       width: `${60}px`,
       height: `${60}px`,
-      transform: `rotate(${randomRotation}deg)`,
+      // transform: `rotate(${randomRotation}deg)`,
     };
   }, []);
 
@@ -70,7 +70,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
   // 使用 useRef 存儲動畫資訊
   const animInfoRef = useRef<AnimationInfo>({
     totalFrames: 0,
-    frameRate: 30, // 預設幀率
+    frameRate: 35, // 預設幀率
     duration: 0,
     resetAtSecond: 0,
     resetAtFrame: 0,
@@ -108,7 +108,9 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
    * @returns 是否成功計算
    */
   const calculateDuration = (dotLottie: DotLottie): boolean => {
-    console.log("calculateDuration", dotLottie);
+    console.log("calculateDuration", {
+      ...dotLottie,
+    });
 
     try {
       // 確保幀數有效
@@ -119,12 +121,15 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
 
       // 取得動畫總幀數和幀率
       const totalFrames = dotLottie.totalFrames;
+      console.log("總幀數:", totalFrames, dotLottie.duration);
       // 安全地從擴充後的實例取得幀率
       const dotLottieWD = dotLottie as DotLottieWithData;
-      const frameRate = dotLottieWD.animationData?.fr ?? 30;
+      const frameRate =
+        dotLottieWD.animationData?.fr ?? animInfoRef.current.frameRate;
 
       // 計算動畫時長 (秒)
-      const duration = totalFrames / frameRate;
+      // const duration = totalFrames / frameRate;
+      const duration = dotLottie.duration;
 
       // 計算指定秒數對應的幀數
       // 如果有設定 resetAtSecond，則使用它，否則使用動畫時長的一半
