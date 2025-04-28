@@ -33,7 +33,8 @@ interface CoinRainProps {
 
 // 金幣 Lottie 動畫來源
 const COIN_LOTTIE_SRC =
-  "https://lottie.host/11822c63-d1ab-4429-bec7-a5202c212ba4/4VXbEcwOdb.lottie"; //35fps 3s
+  "https://lottie.host/33f958a6-8c38-468d-a7a1-9af036113478/fwu8M9Ifnn.lottie"; //60fps 3s
+// "https://lottie.host/11822c63-d1ab-4429-bec7-a5202c212ba4/4VXbEcwOdb.lottie"; //35fps 3s
 // "https://lottie.host/e2b455a7-5733-418b-8b00-e1cf9684394a/ycvPKfDZJS.lottie";
 // "https://lottie.host/931236a4-1a45-4f56-9d26-27bc31fa2683/w1iJh9Vv51.json";
 
@@ -56,8 +57,8 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
       left: `${randomLeft}%`,
       animationDelay: `${randomDelay}s`,
       animationDuration: `${randomDuration}s`,
-      width: `${100}px`,
-      height: `${100}px`,
+      width: `${140}px`,
+      height: `${140}px`,
       transform: `rotate(${randomRotation}deg)`,
     };
   }, []);
@@ -71,7 +72,8 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
   // 使用 useRef 存儲動畫資訊
   const animInfoRef = useRef<AnimationInfo>({
     totalFrames: 0,
-    frameRate: 35, // 預設幀率
+    // frameRate: 35, // 預設幀率
+    frameRate: 60, // 預設幀率
     duration: 0,
     resetAtSecond: 0,
     resetAtFrame: 0,
