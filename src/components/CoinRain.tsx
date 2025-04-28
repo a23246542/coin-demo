@@ -46,18 +46,19 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
   // 為每個金幣生成隨機特性，使落下效果更自然
   const style = useMemo(() => {
     const randomLeft = Math.random() * 100; // 隨機水平位置 (0-100%)
-    const randomDelay = Math.random() * 3; // 隨機延遲開始 (0-5秒)
-    const randomDuration = 5 + Math.random() * 4; // 延長隨機落下時間 (5-9秒)
+    const randomDelay = 2 + Math.random() * 2; // 隨機延遲開始 (0-5秒)
+    // const randomDuration = 5 + Math.random() * 4; // 延長隨機落下時間 (5-9秒)
+    const randomDuration = 3 + Math.random() * 2; // 延長隨機落下時間 (2-4秒)
     // const randomSize = 40 + Math.random() * 60; // 隨機大小 (40-100px)
-    // const randomRotation = Math.random() * 360; // 隨機旋轉角度 (0-360度)
+    const randomRotation = Math.random() * 360; // 隨機旋轉角度 (0-360度)
 
     return {
       left: `${randomLeft}%`,
       animationDelay: `${randomDelay}s`,
       animationDuration: `${randomDuration}s`,
-      width: `${60}px`,
-      height: `${60}px`,
-      // transform: `rotate(${randomRotation}deg)`,
+      width: `${100}px`,
+      height: `${100}px`,
+      transform: `rotate(${randomRotation}deg)`,
     };
   }, []);
 

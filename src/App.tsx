@@ -1,9 +1,11 @@
 import { useState } from "react";
 import CoinRain from "./components/CoinRain";
+import CSS3DCoinRain from "./components/CSS3DCoinRain";
 import "./App.css";
 
 function App() {
   const [showCoins, setShowCoins] = useState(false);
+  const [showCSS3DCoins, setShowCSS3DCoins] = useState(false);
   const [coinCount, setCoinCount] = useState(30);
   const [resetTime, setResetTime] = useState(2.1);
 
@@ -15,9 +17,18 @@ function App() {
     }, 8000);
   };
 
+  const handleCSS3DCoinRain = () => {
+    // 切換 CSS 3D 金幣雨的顯示狀態
+    setShowCSS3DCoins(true);
+    setTimeout(() => {
+      setShowCSS3DCoins(false);
+    }, 8000);
+  };
+
   return (
     <>
       {showCoins && <CoinRain count={coinCount} resetAtSecond={resetTime} />}
+      {/* {showCSS3DCoins && <CSS3DCoinRain count={coinCount} />} */}
       <div className="container">
         <h1>金幣雨 展示</h1>
         <p>{coinCount} 個金幣同時掉落的效果</p>
@@ -58,13 +69,25 @@ function App() {
             </div>
           </div>
 
-          <button
-            onClick={handleCoinRain}
-            disabled={showCoins}
-            className="start-button"
-          >
-            {showCoins ? "金幣雨落下中..." : "開始金幣雨"}
-          </button>
+          <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+            <button
+              onClick={handleCoinRain}
+              disabled={showCoins}
+              className="start-button"
+              style={{ flex: 1 }}
+            >
+              {showCoins ? "Lottie 金幣雨落下中..." : "開始 Lottie 金幣雨"}
+            </button>
+
+            {/* <button
+              onClick={handleCSS3DCoinRain}
+              disabled={showCSS3DCoins}
+              className="start-button"
+              style={{ flex: 1 }}
+            >
+              {showCSS3DCoins ? "CSS 3D 金幣雨落下中..." : "開始 CSS 3D 金幣雨"}
+            </button> */}
+          </div>
         </div>
       </div>
     </>
