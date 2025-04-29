@@ -16,19 +16,24 @@
   will-change: transform, opacity; /* 效能優化 */
 }
 
+.coin dotlottie-player {
+  /* opacity: 0.5; */
+}
+
 @keyframes fall {
   0% {
     transform: translateY(-100px) rotate(0deg);
-    opacity: 1;
+    /* opacity: 1; */
   }
   90% {
     top: calc(100vh - 50px);
+    /* top: calc(100vh - 200px); */
     /* transform: rotate(340deg); */
-    opacity: 1;
+    /* opacity: 1; */
   }
   100% {
     transform: translateY(calc(100vh + 100px)) rotate(360deg);
-    opacity: 0;
+    /* opacity: 0; */
   }
 }
 

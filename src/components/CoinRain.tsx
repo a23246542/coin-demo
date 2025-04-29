@@ -41,7 +41,7 @@ const COIN_LOTTIE_SRC =
 /**
  * 單個金幣組件
  *
- * @param resetAtSecond 指定在第幾秒重頭播放動畫
+ * @param resetAtSecond 指定在第幾秒重頭播放動畫 目前測試1.2秒剛好
  */
 const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
   // 為每個金幣生成隨機特性，使落下效果更自然
@@ -49,10 +49,13 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
     const randomLeft = Math.random() * 100; // 隨機水平位置 (0-100%)
     const randomDelay = 2 + Math.random() * 2; // 隨機延遲開始 (0-5秒)
     // const randomDuration = 5 + Math.random() * 4; // 延長隨機落下時間 (5-9秒)
-    const randomDuration = 3 + Math.random() * 2; // 延長隨機落下時間 (2-4秒)
+    const randomDuration = 4 + Math.random() * 2; // 延長隨機落下時間 (2-4秒)
     // const randomSize = 40 + Math.random() * 60; // 隨機大小 (40-100px)
     const randomRotation = Math.random() * 360; // 隨機旋轉角度 (0-360度)
 
+    // 決定 z-index 與對應透明度（z 越小越淡出）
+    const randomZIndex = Math.floor(Math.random() * 100);
+    const depthOpacity = 0.6 + (randomZIndex / 100) * 0.4;
     return {
       left: `${randomLeft}%`,
       animationDelay: `${randomDelay}s`,
@@ -60,6 +63,8 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
       width: `${140}px`,
       height: `${140}px`,
       transform: `rotate(${randomRotation}deg)`,
+      zIndex: randomZIndex,
+      // opacity: depthOpacity,
     };
   }, []);
 

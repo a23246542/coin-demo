@@ -7,7 +7,7 @@ function App() {
   const [showCoins, setShowCoins] = useState(false);
   const [showCSS3DCoins, setShowCSS3DCoins] = useState(false);
   const [coinCount, setCoinCount] = useState(30);
-  const [resetTime, setResetTime] = useState(2.1);
+  const [resetTime, setResetTime] = useState(1.2);
 
   const handleCoinRain = () => {
     // 切換金幣雨的顯示狀態
