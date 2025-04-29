@@ -6,6 +6,13 @@
     will-change: transform, opacity;
   }
 
+  .award-player-animation {
+    @apply will-change-transform animate-[fall_linear_forwards];
+    will-change: transform, opacity;
+    animation-duration: 6s;
+    animation-delay: 0.3s;
+  }
+
   .preserve-3d {
     transform-style: preserve-3d;
   }

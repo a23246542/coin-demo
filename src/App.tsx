@@ -1,7 +1,8 @@
 import { useState } from "react";
 import CoinRain from "./components/CoinRain";
 // import CSS3DCoinRain from "./components/CSS3DCoinRain";
-// import "./App.css";
+import "./App.css";
+
 function App() {
   const [showCoins, setShowCoins] = useState(false);
   const [showCSS3DCoins, setShowCSS3DCoins] = useState(false);
@@ -26,8 +27,19 @@ function App() {
 
   return (
     <>
-      {showCoins && <CoinRain count={coinCount} resetAtSecond={resetTime} />}
-      {/* {showCSS3DCoins && <CSS3DCoinRain count={coinCount} />} */}
+      {showCoins && (
+        <CoinRain
+          count={coinCount}
+          resetAtSecond={resetTime}
+          showAwardPlayers={true}
+        />
+      )}
+
+      {/* <AwardWinningPlayer
+        avatarUrl="https://i.pravatar.cc/150?img=1"
+        amount={100}
+        className="custom-class"
+      /> */}
       <div className="container flex flex-col items-center justify-center flex-1 w-full relative min-h-[600px] text-[#f7b918] bg-transparent overflow-auto">
         <h1 className="text-2xl mb-2 text-[#f7b918] shadow-md flex items-center justify-center gap-2">
           金幣雨 展示

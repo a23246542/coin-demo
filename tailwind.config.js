@@ -1,12 +1,10 @@
 /** @type {import('tailwindcss').Config} */
+import theme from "./src/styles/theme";
+
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx,css}"],
-  theme: {
-    extend: {
-      animation: {
-        "coin-fall": "fall linear forwards",
-      },
-    },
-  },
-  plugins: [],
+  theme,
+  plugins: [
+    // ...existing code...
+  ],
 };

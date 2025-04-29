@@ -1,42 +1,15 @@
-// 導入必要的依賴和自定義 Tailwind 樣式
+// 導入必要的依賴
 import { useMemo, useRef, useEffect, useState, useCallback } from "react";
 import { DotLottieReact, DotLottie } from "@lottiefiles/dotlottie-react";
 
-// 擴充 DotLottie 型別以取得 animationData 中的幀率屬性
-type DotLottieWithData = DotLottie & { animationData: { fr: number } };
-
-// 定義幀變化事件的介面
-interface FrameEvent {
-  currentFrame: number;
-}
-
-// 定義動畫資訊介面，提高型別安全性
-interface AnimationInfo {
-  totalFrames: number;
-  frameRate: number;
-  duration: number;
-  resetAtSecond: number;
-  resetAtFrame: number;
-  isReady: boolean;
-}
-
-// 金幣組件 Props
-interface CoinProps {
-  resetAtSecond?: number; // 在第幾秒重頭播放，預設為動畫時長的一半
-}
-
-// 金幣雨組件 Props
-interface CoinRainProps {
-  count?: number; // 金幣數量
-  resetAtSecond?: number; // 在第幾秒重頭播放
-}
-
-// 金幣 Lottie 動畫來源
-const COIN_LOTTIE_SRC =
-  "https://lottie.host/33f958a6-8c38-468d-a7a1-9af036113478/fwu8M9Ifnn.lottie"; //60fps 3s
-// "https://lottie.host/11822c63-d1ab-4429-bec7-a5202c212ba4/4VXbEcwOdb.lottie"; //35fps 3s
-// "https://lottie.host/e2b455a7-5733-418b-8b00-e1cf9684394a/ycvPKfDZJS.lottie";
-// "https://lottie.host/931236a4-1a45-4f56-9d26-27bc31fa2683/w1iJh9Vv51.json";
+// 導入型別和常數
+import {
+  CoinProps,
+  AnimationInfo,
+  DotLottieWithData,
+  FrameEvent,
+} from "./types";
+import { COIN_LOTTIE_SRC } from "./constants";
 
 /**
  * 單個金幣組件
@@ -314,21 +287,4 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
   );
 };
 
-/**
- * 主要金幣雨組件
- *
- * @param count 金幣數量
- * @param resetAtSecond 在第幾秒重頭播放
- */
-export const CoinRain = ({ count = 30, resetAtSecond }: CoinRainProps) => {
-  console.log("CoinRain", { count, resetAtSecond });
-  return (
-    <div className="coin-rain-container fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
-      {Array.from({ length: count }).map((_, index) => (
-        <Coin key={index} resetAtSecond={resetAtSecond} />
-      ))}
-    </div>
-  );
-};
-
-export default CoinRain;
+export default Coin;
