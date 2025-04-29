@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import "./CSS3DCoinRain.css";
+import "../styles/tailwind-components.css";
 
 /**
  * 金幣雨元件的屬性介面
@@ -16,9 +16,7 @@ const CSS3DCoin = () => {
   const style = useMemo(() => {
     const randomLeft = Math.random() * 100; // 隨機水平位置 (0-100%)
     const randomDelay = Math.random() * 3; // 隨機延遲開始 (0-3秒)
-    // const randomDuration = 6 + Math.random() * 4; // 隨機落下時間 (6-10秒)
     const randomDuration = Math.random() * 4; // 隨機落下時間 (6-10秒)
-    const randomRotationX = Math.random() * 30 - 15; // 隨機 X 軸傾斜角度 (-15到15度)
 
     return {
       left: `${randomLeft}%`,
@@ -45,24 +43,35 @@ const CSS3DCoin = () => {
   };
 
   return (
-    <div className="css3d-coin" style={style}>
-      <div style={initialRotation}>
+    <div
+      className="absolute w-[60px] h-[60px] transform-gpu animate-[css3d-fall_linear_forwards] will-change-transform will-change-opacity"
+      style={style}
+    >
+      <div style={initialRotation} className="preserve-3d">
         {/* 金幣正面 */}
-        <div className="css3d-coin-face css3d-coin-front">
-          <span className="css3d-coin-symbol" role="img" aria-label="star">
+        <div className="absolute w-full h-full backface-hidden rounded-full flex items-center justify-center font-bold text-[#ffe066] text-3xl css3d-coin-front">
+          <span
+            className="text-3xl leading-none css3d-coin-symbol"
+            role="img"
+            aria-label="star"
+          >
             ⭐
           </span>
         </div>
 
         {/* 金幣背面 */}
-        <div className="css3d-coin-face css3d-coin-back">
-          <span className="css3d-coin-symbol" role="img" aria-label="star">
+        <div className="absolute w-full h-full backface-hidden rounded-full flex items-center justify-center font-bold text-[#ffe066] text-3xl css3d-coin-back">
+          <span
+            className="text-3xl leading-none css3d-coin-symbol"
+            role="img"
+            aria-label="star"
+          >
             ⭐
           </span>
         </div>
 
         {/* 金幣側面容器 - 確保完美圓形 */}
-        <div className="css3d-coin-edge-container">
+        <div className="absolute w-full h-full rounded-full css3d-coin-edge-container">
           {/* 金幣側面 - 多個 div 模擬圓形邊緣 */}
           {renderEdges()}
         </div>
@@ -79,7 +88,7 @@ const CSS3DCoin = () => {
  */
 const CSS3DCoinRain = ({ count = 30 }: CSS3DCoinRainProps) => {
   return (
-    <div className="css3d-coin-rain-container">
+    <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10 perspective-[1000px]">
       {Array.from({ length: count }).map((_, index) => (
         <CSS3DCoin key={index} />
       ))}

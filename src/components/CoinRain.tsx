@@ -1,6 +1,6 @@
+// 導入必要的依賴和自定義 Tailwind 樣式
 import { useMemo, useRef, useEffect, useState, useCallback } from "react";
 import { DotLottieReact, DotLottie } from "@lottiefiles/dotlottie-react";
-import "./CoinRain.css";
 
 // 擴充 DotLottie 型別以取得 animationData 中的幀率屬性
 type DotLottieWithData = DotLottie & { animationData: { fr: number } };
@@ -56,12 +56,13 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
     // 決定 z-index 與對應透明度（z 越小越淡出）
     const randomZIndex = Math.floor(Math.random() * 100);
     const depthOpacity = 0.6 + (randomZIndex / 100) * 0.4;
+
     return {
       left: `${randomLeft}%`,
       animationDelay: `${randomDelay}s`,
       animationDuration: `${randomDuration}s`,
-      width: `${140}px`,
-      height: `${140}px`,
+      width: "140px",
+      height: "140px",
       transform: `rotate(${randomRotation}deg)`,
       zIndex: randomZIndex,
       // opacity: depthOpacity,
@@ -302,7 +303,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
   }, [lottieInstance, resetAnimation]);
 
   return (
-    <div className="coin" style={style}>
+    <div className="coin absolute top-[-100px] coin-animation" style={style}>
       <DotLottieReact
         src={COIN_LOTTIE_SRC}
         autoplay
@@ -322,8 +323,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
 export const CoinRain = ({ count = 30, resetAtSecond }: CoinRainProps) => {
   console.log("CoinRain", { count, resetAtSecond });
   return (
-    <div className="coin-rain-container">
-      {/* <Coin /> */}
+    <div className="coin-rain-container fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
       {Array.from({ length: count }).map((_, index) => (
         <Coin key={index} resetAtSecond={resetAtSecond} />
       ))}
