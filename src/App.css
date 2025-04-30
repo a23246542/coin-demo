@@ -157,18 +157,19 @@ h1 span[role="img"] {
   color: #fff;
 }
 
-.slider {
-  width: 100%;
-  height: 8px;
+/* 針對 range 滑桿的樣式調整 */
+input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
+  width: 100%;
+  height: 8px;
   background: rgba(255, 255, 255, 0.2);
-  outline: none;
   border-radius: 8px;
+  outline: none;
   overflow: hidden;
 }
 
-.slider::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 18px;
@@ -176,8 +177,44 @@ h1 span[role="img"] {
   border-radius: 50%;
   background: #f7b918;
   cursor: pointer;
-  border: 2px solid #fff;
+  border: 2px solid rgba(255, 255, 255, 0.8);
   box-shadow: -407px 0 0 400px #f7b918;
+}
+
+/* Firefox 支援 */
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f7b918;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+input[type="range"]::-moz-range-progress {
+  background-color: #f7b918;
+  height: 8px;
+  border-radius: 8px;
+}
+
+/* IE/Edge 支援 */
+input[type="range"]::-ms-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f7b918;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+input[type="range"]::-ms-fill-lower {
+  background: #f7b918;
+  border-radius: 8px;
+}
+
+input[type="range"]::-ms-fill-upper {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
 }
 
 .value-display {

@@ -49,7 +49,7 @@ function App() {
         </p>
 
         <div className="p-8 max-w-[400px] bg-transparent flex flex-col items-center relative z-1 gap-10">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 mt-0 shadow-lg border border-white/[0.18] w-full mb-10">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-24 mt-0 shadow-lg border border-white/[0.18] w-full mb-10">
             <div className="mb-8 text-left h-auto min-h-[80px] last:mb-0">
               <div className="flex justify-between items-center mb-4 h-[50px]">
                 <label htmlFor="coin-count" className="text-base text-white">
@@ -66,7 +66,7 @@ function App() {
                 max="100"
                 value={coinCount}
                 onChange={(e) => setCoinCount(Number(e.target.value))}
-                className="w-full h-2 appearance-none bg-white/20 outline-none rounded-lg overflow-hidden"
+                className="w-full h-8 appearance-none bg-white/20 outline-none rounded-lg overflow-hidden"
               />
             </div>
 
@@ -87,7 +87,7 @@ function App() {
                 step="0.1"
                 value={resetTime}
                 onChange={(e) => setResetTime(Number(e.target.value))}
-                className="w-full h-2 appearance-none bg-white/20 outline-none rounded-lg overflow-hidden"
+                className="w-full h-8 appearance-none bg-white/20 outline-none rounded-lg overflow-hidden"
               />
             </div>
           </div>
