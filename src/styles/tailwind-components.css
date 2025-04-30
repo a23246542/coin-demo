@@ -7,10 +7,11 @@
   }
 
   .award-player-animation {
-    @apply will-change-transform animate-[fall_linear_forwards];
+    /* @apply will-change-transform animate-[fall-no-rotate_linear_forwards]; */
+    @apply will-change-transform animate-[fall-no-rotate_forwards];
     will-change: transform, opacity;
-    animation-duration: 6s;
-    animation-delay: 0.3s;
+    /* animation-duration: 6s;
+    animation-delay: 0.3s; */
   }
 
   .preserve-3d {
@@ -88,6 +89,28 @@
     transform: translateY(calc(100vh + 100px)) rotate(360deg);
   }
 }
+@keyframes fall-no-rotate {
+  0% {
+    transform: translateY(-100px) rotate(var(--rotate-angle-start, 0deg));
+    /* animation-timing-function: cubic-bezier(0.9, 0, 0.1, 1); */
+  }
+  /* 40% {
+    transform: translateY(30svh);
+    animation-timing-function: linear;
+  }
+  90% {
+    transform: translateY(80svh);
+  } */
+  90% {
+    top: calc(100vh - 50px);
+  }
+  100% {
+    transform: translateY(calc(100svh + 200px))
+      /* transform: translateY(calc(100% + 200px)) */
+      rotate(var(--rotate-angle-end, 0deg));
+    animation-timing-function: ease-out; /* 快速結束 */
+  }
+}
 
 /* 3D 金幣的墜落和旋轉動畫 */
 @keyframes css3d-fall {
@@ -101,7 +124,7 @@
   }
 
   100% {
-    transform: translateY(calc(100vh + 100px)) rotateY(720deg) rotateX(10deg);
+    transform: translateY(calc(100svh + 100px)) rotateY(720deg) rotateX(10deg);
     opacity: 0;
   }
 }

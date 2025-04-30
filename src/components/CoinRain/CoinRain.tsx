@@ -38,15 +38,23 @@ export const CoinRain = ({
       style: {
         position: "absolute" as const,
         left: `${Math.random() * 60 + 20}%`, // 20% 到 80% 之間隨機位置
-        top: "-100px",
-        transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
+        // top: "-100px",
+        // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
+        "--rotate-angle-start": `${angles[i]}deg`,
+        "--rotate-angle-end": `${angles[i]}deg`,
         opacity: 1,
         zIndex: 100,
-        transition: "all 0.3s ease-in-out", // 新增 transition 屬性
+        // transition: "all 0.3s ease-in-out", // 新增 transition 屬性
         // animationDelay: `${0.5 + Math.random() * 1}s`, // 隨機延遲開始 (0.5-1.5秒)
-        animationDelay: `${2 + Math.random() * 2}s`, // 隨機延遲開始 (0.5-1.5秒)
+        animationDelay: `${1 + Math.random() * 2}s`, // 隨機延遲開始 (0.5-1.5秒)
         // animationDuration: `${5 + Math.random() * 2}s`, // 隨機落下時間 (5-7秒)
-        animationDuration: `${4 + Math.random() * 2}s`, // 隨機落下時間 (5-7秒)
+        // animationDuration: `${4 + Math.random() * 2}s`, // 隨機落下時間 (5-7秒)
+        animationDuration: `${4}s`, // 隨機落下時間 (5-7秒)
+        // animationTimingFunction: "cubic-bezier(0.6, 0.01, 0.4, 0.99)", // 前後快中間更慢的時間函數
+        animationTimingFunction: "cubic-bezier(0.6, 0.4, 1, 0.1)", // 前後快中間更慢的時間函數
+        // animationTimingFunction: "cubic-bezier(.54,.035,1,.1)", // 前後快中間更慢的時間函數
+        // animationTimingFunction: "cubic-bezier(0.6, 0.2, 0.9, 0.6)", // 前後快中間更慢的時間函數
+        // animationTimingFunction: "cubic-bezier(0.4, 0, 0.6, 1)", // 前後快中間更慢的時間函數
       },
     }));
   }, []); // 空依賴數組，只在組件初始化時建立一次
@@ -63,7 +71,9 @@ export const CoinRain = ({
         mockAwardPlayers.map((player) => (
           <div
             key={`player-${player.id}`}
+            // className="award-player-animation absolute top-[-100px]"
             className="award-player-animation absolute top-[-100px]"
+            // className="absolute top-0"
             style={player.style}
           >
             <AwardWinningPlayer

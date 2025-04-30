@@ -5,10 +5,10 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   server: {
     host: true, // 等同於 '0.0.0.0'，允許 LAN 存取
-    port: 3000,
+    port: 3002, // 設定伺服器埠號,
   },
   build: {
-    outDir: 'dist',
+    outDir: "dist",
   },
   plugins: [react()],
 });
