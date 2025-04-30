@@ -41,15 +41,17 @@ function App() {
         className="custom-class"
       /> */}
       <div className="container flex flex-col items-center justify-center flex-1 w-full relative min-h-[600px] text-[#f7b918] bg-transparent overflow-auto">
-        <h1 className="text-2xl mb-2 text-[#f7b918] shadow-md flex items-center justify-center gap-2">
+        <h1 className="text-xl mb-4 text-[#f7b918] shadow-md flex items-center justify-center gap-2 font-bold">
           金幣雨 展示
         </h1>
-        <p>{coinCount} 個金幣同時掉落的效果</p>
+        <p className="mb-8 text-base tracking-wide">
+          {coinCount} 個金幣同時掉落的效果
+        </p>
 
-        <div className="p-8 max-w-[500px] bg-transparent flex flex-col items-center relative z-1">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mt-4 shadow-lg border border-white/[0.18] w-full mb-6">
-            <div className="mb-6 text-left h-auto min-h-[80px] last:mb-0">
-              <div className="flex justify-between items-center mb-3 h-[50px]">
+        <div className="p-8 max-w-[400px] bg-transparent flex flex-col items-center relative z-1 gap-10">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 mt-0 shadow-lg border border-white/[0.18] w-full mb-10">
+            <div className="mb-8 text-left h-auto min-h-[80px] last:mb-0">
+              <div className="flex justify-between items-center mb-4 h-[50px]">
                 <label htmlFor="coin-count" className="text-base text-white">
                   金幣數量
                 </label>
@@ -68,8 +70,8 @@ function App() {
               />
             </div>
 
-            <div className="mb-6 text-left h-auto min-h-[80px] last:mb-0">
-              <div className="flex justify-between items-center mb-3 h-[50px]">
+            <div className="mb-8 text-left h-auto min-h-[80px] last:mb-0">
+              <div className="flex justify-between items-center mb-4 h-[50px]">
                 <label htmlFor="reset-time" className="text-base text-white">
                   動畫重置時間
                 </label>
@@ -90,11 +92,13 @@ function App() {
             </div>
           </div>
 
-          <div className="flex gap-[10px] mb-[10px]">
+          {/* 按鈕區塊，間距與陰影效果調整 */}
+          <div className="flex w-full justify-center gap-4">
             <button
               onClick={handleCoinRain}
               disabled={showCoins}
-              className="bg-[#f7b918] text-black font-bold py-3 px-6 rounded-full cursor-pointer border-none text-base transition-all duration-300 shadow-md hover:bg-[#ffcc33] hover:translate-y-[-2px] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 w-full max-w-[250px] flex-1"
+              className="bg-[#f7b918] text-black font-bold py-12 px-24 rounded-full cursor-pointer border-none text-base transition-all duration-200 shadow-[0_4px_16px_0_rgba(247,185,24,0.35)] hover:bg-[#ffd84a] hover:shadow-[0_8px_24px_0_rgba(247,185,24,0.45)] hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed min-w-[260px] mb-0"
+              style={{ boxShadow: "0 6px 12px rgba(247,185,24,0.35)" }}
             >
               {showCoins ? "Lottie 金幣雨落下中..." : "開始 Lottie 金幣雨"}
             </button>
