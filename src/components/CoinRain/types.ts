@@ -30,11 +30,9 @@ export interface AwardPlayer {
   amount: number;
   style: {
     position: "absolute";
-    transform: string;
+    transform?: string;
     left: string;
-    top: string;
     opacity: number;
-    transition: string;
     zIndex: number;
   };
 }
