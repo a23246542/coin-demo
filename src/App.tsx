@@ -38,7 +38,8 @@ function App() {
 
   return (
     <div
-      className="App w-full max-w-[390px] mx-auto h-[844px] overflow-hidden  relative"
+      // className="App w-full max-w-[390px] mx-auto h-[844px] overflow-hidden  relative"
+      className="App w-full mx-auto h-full overflow-hidden  relative"
       style={appStyle}
     >
       {showCoins && (
