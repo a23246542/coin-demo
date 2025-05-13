@@ -1,7 +1,8 @@
 // 導入必要的依賴
-import { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react"; // 引入 React
 import AwardWinningPlayer from "../AwardWinningPlayer";
-import Coin from "./Coin";
+import Coin from "./Coin"; // 改為具名匯入
+// import { Coin } from "./Coin"; // 確保 Coin.tsx 中 export const Coin
 
 // 導入型別
 import { CoinRainProps, AwardPlayer } from "./types";
@@ -13,6 +14,55 @@ import { CoinRainProps, AwardPlayer } from "./types";
  */
 const generateUniqueId = (): string => {
   return `${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+};
+
+/**
+ * 為單個金幣產生隨機樣式 (此函式應與您先前版本中定義的保持一致)
+ * @param index - 金幣的索引，可用於實現更均勻的分布
+ * @param totalCoins - 金幣總數
+ * @returns React.CSSProperties 物件
+ */
+const generateCoinStyle = (
+  index: number,
+  totalCoins: number,
+  delay: boolean = true
+): React.CSSProperties => {
+  // 1. 水平位置 (left): 嘗試更均勻地分布金幣
+  const segmentWidth = 100 / (totalCoins > 0 ? totalCoins + 1 : 1); // 防止 totalCoins 為 0 的情況
+  const baseLeftPercentage = segmentWidth * (index + 1);
+  const randomLeftOffset = (Math.random() - 0.5) * (segmentWidth / 2);
+  const left = `${Math.max(
+    5,
+    Math.min(95, baseLeftPercentage + randomLeftOffset)
+  )}%`;
+
+  // 2. 動畫延遲 (animationDelay): 實現錯落有致的開始時間
+  const baseDelayFactor = 0.1; // 稍微減小索引對基礎延遲的影響
+  // const baseDelay = (index % 5) * baseDelayFactor;
+  const baseDelay = (index % 10) * baseDelayFactor;
+  const randomDelayOffset = Math.random() * 2.5;
+  const animationDelay = delay ? `${baseDelay + randomDelayOffset}s` : "0s";
+
+  // 3. 動畫持續時間 (animationDuration): 金幣落下的速度
+  const animationDuration = `${2.5 + Math.random() * 2}s`; // 3.5 到 5.5 秒
+
+  // 4. 旋轉角度 (transform)
+  const randomRotation = Math.random() * 360;
+  const transform = `rotate(${randomRotation}deg)`;
+
+  // 5. Z軸層級 (zIndex)
+  const randomZIndex = Math.floor(Math.random() * 100);
+
+  return {
+    left,
+    animationDelay,
+    animationDuration,
+    width: "140px",
+    height: "140px",
+    transform,
+    zIndex: randomZIndex,
+    // opacity: depthOpacity, // 如果需要深度感
+  };
 };
 
 /**
@@ -34,14 +84,37 @@ export const CoinRain = ({
     Array.from({ length: count }, () => generateUniqueId())
   );
 
+  // 建立金幣樣式陣列，預先產生每個金幣的樣式
+  const [coinStyles, setCoinStyles] = useState<React.CSSProperties[]>(() =>
+    Array.from({ length: count }, (_, i) => generateCoinStyle(i, count))
+  );
+
+  // 當金幣數量 (count prop) 改變時，重新初始化種子和樣式
+  useEffect(() => {
+    setCoinSeeds(Array.from({ length: count }, () => generateUniqueId()));
+    setCoinStyles(
+      Array.from({ length: count }, (_, i) => generateCoinStyle(i, count))
+    );
+  }, [count]);
+
   // 金幣 CSS 動畫結束時的回調函式
-  const handleCoinAnimationEnd = useCallback((index: number) => {
-    setCoinSeeds((prevSeeds) => {
-      const newSeeds = [...prevSeeds];
-      newSeeds[index] = generateUniqueId(); // 產生新種子，強制 React 重建組件
-      return newSeeds;
-    });
-  }, []);
+  const handleCoinAnimationEnd = useCallback(
+    (index: number) => {
+      // 更新特定索引的金幣種子，觸發該金幣的重建
+      setCoinSeeds((prevSeeds) => {
+        const newSeeds = [...prevSeeds];
+        newSeeds[index] = generateUniqueId(); // 產生新種子
+        return newSeeds;
+      });
+      // 同時更新該金幣的樣式，確保重生後的金幣有新的隨機樣式
+      setCoinStyles((prevStyles) => {
+        const newStyles = [...prevStyles];
+        newStyles[index] = generateCoinStyle(index, count, false); // 為重生的金幣產生新樣式
+        return newStyles;
+      });
+    },
+    [count]
+  ); // count 是 generateCoinStyle 的依賴
 
   // 使用 useMemo 產生獲獎玩家假資料
   const mockAwardPlayers = useMemo<AwardPlayer[]>(() => {
@@ -86,8 +159,10 @@ export const CoinRain = ({
     <div className="coin-rain-container fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
       {/* 金幣雨 - 使用種子作為 key，每當種子變化時會重建金幣 */}
       {coinSeeds.map((seed, index) => (
+        // @ts-ignore TODO: 確保 CoinProps 中有 initialStyle 且類型正確 -> 已在 types.ts 中修正
         <Coin
           key={seed}
+          initialStyle={coinStyles[index]} // 使用預先產生的樣式
           resetAtSecond={resetAtSecond}
           onAnimationEnd={() => handleCoinAnimationEnd(index)}
         />

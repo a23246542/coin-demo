@@ -33,6 +33,7 @@ export interface CoinRainProps {
 
 // 單個金幣屬性介面
 export interface CoinProps {
+  initialStyle: React.CSSProperties; // 由父層計算好的初始樣式
   resetAtSecond?: number; // 指定在第幾秒重頭播放動畫
   onAnimationEnd?: () => void; // 金幣動畫結束時的回調函式
 }

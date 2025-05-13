@@ -20,11 +20,13 @@ import { COIN_LOTTIE_SRC } from "./constants";
 const Coin = ({
   resetAtSecond: propResetAtSecond,
   onAnimationEnd,
+  initialStyle,
 }: CoinProps) => {
   // 為每個金幣生成隨機特性，使落下效果更自然
   const style = useMemo(() => {
     const randomLeft = Math.random() * 100; // 隨機水平位置 (0-100%)
-    const randomDelay = 2 + Math.random() * 2; // 隨機延遲開始 (0-5秒)
+    // const randomLeft = `${Math.random() * 70 + 10}%`; // 20% 到 80% 之間隨機位置
+    const randomDelay = 2 + Math.random() * 4; // 隨機延遲開始 (0-5秒)
     // const randomDuration = 5 + Math.random() * 4; // 延長隨機落下時間 (5-9秒)
     const randomDuration = 4 + Math.random() * 2; // 延長隨機落下時間 (2-4秒)
     // const randomSize = 40 + Math.random() * 60; // 隨機大小 (40-100px)
@@ -94,9 +96,9 @@ const Coin = ({
    * @returns 是否成功計算
    */
   const calculateDuration = (dotLottie: DotLottie): boolean => {
-    console.log("calculateDuration", {
-      ...dotLottie,
-    });
+    // console.log("calculateDuration", {
+    //   ...dotLottie,
+    // });
 
     try {
       // 確保幀數有效
@@ -248,6 +250,17 @@ const Coin = ({
           if (result && checkInfoInterval) {
             clearInterval(checkInfoInterval);
           }
+        } else {
+          // 如果 totalFrames 尚未準備好，可以稍後再試或監聽 'load'/'ready' 事件
+          // const handleLoad = () => {
+          //   if (instance.totalFrames > 0) {
+          //     calculateDuration(instance);
+          //   }
+          //     instance.removeEventListener("load", handleLoad);
+          //     instance.removeEventListener("ready", handleLoad);
+          //   };
+          //   instance.addEventListener("load", handleLoad);
+          //   instance.addEventListener("ready", handleLoad);
         }
       }, 200);
     }
@@ -291,7 +304,8 @@ const Coin = ({
   return (
     <div
       className="coin absolute top-[-100px] coin-animation"
-      style={style}
+      // style={style}
+      style={initialStyle}
       onAnimationEnd={handleAnimationEnd}
     >
       <DotLottieReact
