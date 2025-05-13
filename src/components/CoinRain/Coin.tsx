@@ -54,6 +54,17 @@ const Coin = ({
   // 防止過於頻繁重置的冷卻時間標記
   const resetCooldownRef = useRef<boolean>(false);
 
+  // 新增：組件卸載時銷毀 Lottie 實例
+  useEffect(() => {
+    // 返回一個清理函式，此函式會在組件卸載前執行
+    return () => {
+      if (lottieInstance) {
+        // console.log("Destroying lottie instance in Coin component"); // 可選的日誌，用於調試
+        lottieInstance.destroy();
+      }
+    };
+  }, [lottieInstance]); // 依賴 lottieInstance，確保在 lottieInstance 存在時執行清理
+
   // 使用 useRef 存儲動畫資訊
   const animInfoRef = useRef<AnimationInfo>({
     totalFrames: 0,
