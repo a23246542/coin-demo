@@ -3,12 +3,14 @@
 @layer components {
   .coin-animation {
     @apply will-change-transform animate-[fall_linear_forwards];
+    /* @apply will-change-transform animate-[fall_linear_forwards_infinite]; */
     will-change: transform, opacity;
   }
 
   .award-player-animation {
     /* @apply will-change-transform animate-[fall-no-rotate_linear_forwards]; */
     @apply will-change-transform animate-[fall-no-rotate_forwards];
+    /* @apply will-change-transform animate-[fall-no-rotate_forwards_infinite]; */
     will-change: transform, opacity;
     /* animation-duration: 6s;
     animation-delay: 0.3s; */

@@ -15,8 +15,12 @@ import { COIN_LOTTIE_SRC } from "./constants";
  * 單個金幣組件
  *
  * @param resetAtSecond 指定在第幾秒重頭播放動畫 目前測試1.2秒剛好
+ * @param onAnimationEnd 金幣 CSS 動畫完成時的回調函式
  */
-const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
+const Coin = ({
+  resetAtSecond: propResetAtSecond,
+  onAnimationEnd,
+}: CoinProps) => {
   // 為每個金幣生成隨機特性，使落下效果更自然
   const style = useMemo(() => {
     const randomLeft = Math.random() * 100; // 隨機水平位置 (0-100%)
@@ -103,7 +107,7 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
 
       // 取得動畫總幀數和幀率
       const totalFrames = dotLottie.totalFrames;
-      console.log("總幀數:", totalFrames, dotLottie.duration);
+      // console.log("總幀數:", totalFrames, dotLottie.duration);
       // 安全地從擴充後的實例取得幀率
       const dotLottieWD = dotLottie as DotLottieWithData;
       const frameRate =
@@ -131,13 +135,13 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
         isReady: true,
       };
 
-      console.log("動畫資訊:", {
-        totalFrames,
-        frameRate,
-        duration: `${duration.toFixed(2)}秒`,
-        resetAtSecond,
-        resetAtFrame,
-      });
+      // console.log("動畫資訊:", {
+      //   totalFrames,
+      //   frameRate,
+      //   duration: `${duration.toFixed(2)}秒`,
+      //   resetAtSecond,
+      //   resetAtFrame,
+      // });
 
       return true;
     } catch (error) {
@@ -275,8 +279,21 @@ const Coin = ({ resetAtSecond: propResetAtSecond }: CoinProps) => {
     };
   }, [lottieInstance, resetAnimation]);
 
+  // 處理 CSS 動畫結束事件
+  const handleAnimationEnd = useCallback(() => {
+    console.log("Coin animation ended");
+    // 呼叫父組件提供的回調函式
+    if (onAnimationEnd) {
+      onAnimationEnd();
+    }
+  }, [onAnimationEnd]);
+
   return (
-    <div className="coin absolute top-[-100px] coin-animation" style={style}>
+    <div
+      className="coin absolute top-[-100px] coin-animation"
+      style={style}
+      onAnimationEnd={handleAnimationEnd}
+    >
       <DotLottieReact
         src={COIN_LOTTIE_SRC}
         autoplay

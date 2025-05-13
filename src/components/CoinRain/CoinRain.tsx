@@ -1,10 +1,19 @@
 // 導入必要的依賴
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import AwardWinningPlayer from "../AwardWinningPlayer";
 import Coin from "./Coin";
 
 // 導入型別
 import { CoinRainProps, AwardPlayer } from "./types";
+
+/**
+ * 產生唯一識別符的輔助函式
+ * 結合時間戳記與隨機數，確保在高頻重建場景中的唯一性
+ * @returns 唯一識別符字串
+ */
+const generateUniqueId = (): string => {
+  return `${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+};
 
 /**
  * 主要金幣雨組件
@@ -18,7 +27,21 @@ export const CoinRain = ({
   resetAtSecond,
   showAwardPlayers = true,
 }: CoinRainProps) => {
-  console.log("CoinRain", { count, resetAtSecond, showAwardPlayers });
+  // console.log("CoinRain", { count, resetAtSecond, showAwardPlayers });
+
+  // 建立金幣種子陣列，管理每個金幣的唯一識別符
+  const [coinSeeds, setCoinSeeds] = useState<string[]>(() =>
+    Array.from({ length: count }, () => generateUniqueId())
+  );
+
+  // 金幣 CSS 動畫結束時的回調函式
+  const handleCoinAnimationEnd = useCallback((index: number) => {
+    setCoinSeeds((prevSeeds) => {
+      const newSeeds = [...prevSeeds];
+      newSeeds[index] = generateUniqueId(); // 產生新種子，強制 React 重建組件
+      return newSeeds;
+    });
+  }, []);
 
   // 使用 useMemo 產生獲獎玩家假資料
   const mockAwardPlayers = useMemo<AwardPlayer[]>(() => {
@@ -37,7 +60,7 @@ export const CoinRain = ({
       amount: Math.floor(Math.random() * 500) + 100,
       style: {
         position: "absolute" as const,
-        left: `${Math.random() * 60 + 20}%`, // 20% 到 80% 之間隨機位置
+        left: `${Math.random() * 60 + 10}%`, // 20% 到 80% 之間隨機位置
         // top: "-100px",
         // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
         "--rotate-angle-start": `${angles[i]}deg`,
@@ -61,9 +84,13 @@ export const CoinRain = ({
 
   return (
     <div className="coin-rain-container fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
-      {/* 金幣雨 */}
-      {Array.from({ length: count }).map((_, index) => (
-        <Coin key={`coin-${index}`} resetAtSecond={resetAtSecond} />
+      {/* 金幣雨 - 使用種子作為 key，每當種子變化時會重建金幣 */}
+      {coinSeeds.map((seed, index) => (
+        <Coin
+          key={seed}
+          resetAtSecond={resetAtSecond}
+          onAnimationEnd={() => handleCoinAnimationEnd(index)}
+        />
       ))}
 
       {/* 獲獎玩家 */}
@@ -71,9 +98,7 @@ export const CoinRain = ({
         mockAwardPlayers.map((player) => (
           <div
             key={`player-${player.id}`}
-            // className="award-player-animation absolute top-[-100px]"
             className="award-player-animation absolute top-[-100px]"
-            // className="absolute top-0"
             style={player.style}
           >
             <AwardWinningPlayer

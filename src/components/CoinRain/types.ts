@@ -18,28 +18,29 @@ export interface AnimationInfo {
   isReady: boolean;
 }
 
-// 金幣組件 Props
-export interface CoinProps {
-  resetAtSecond?: number; // 在第幾秒重頭播放，預設為動畫時長的一半
+// 幣種類型
+export enum CoinType {
+  Coin = "coin",
+  Diamond = "diamond",
 }
 
-// 獲獎玩家介面
-export interface AwardPlayer {
-  id: number;
-  avatarUrl: string;
-  amount: number;
-  style: {
-    position: "absolute";
-    transform?: string;
-    left: string;
-    opacity: number;
-    zIndex: number;
-  };
-}
-
-// 金幣雨組件 Props
+// 金幣特效屬性介面
 export interface CoinRainProps {
   count?: number; // 金幣數量
   resetAtSecond?: number; // 在第幾秒重頭播放
   showAwardPlayers?: boolean; // 是否顯示獲獎玩家
+}
+
+// 單個金幣屬性介面
+export interface CoinProps {
+  resetAtSecond?: number; // 指定在第幾秒重頭播放動畫
+  onAnimationEnd?: () => void; // 金幣動畫結束時的回調函式
+}
+
+// 獲獎玩家介面
+export interface AwardPlayer {
+  id: number; // 唯一標識
+  avatarUrl: string; // 頭像 URL
+  amount: number; // 獲獎金額
+  style: React.CSSProperties; // 樣式
 }

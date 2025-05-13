@@ -15,17 +15,17 @@ function App() {
     // 切換金幣雨的顯示狀態
     setShowCoins(true);
     setTimeout(() => {
-      setShowCoins(false);
+      // setShowCoins(false);
     }, 8000);
   };
 
-  const handleCSS3DCoinRain = () => {
-    // 切換 CSS 3D 金幣雨的顯示狀態
-    setShowCSS3DCoins(true);
-    setTimeout(() => {
-      setShowCSS3DCoins(false);
-    }, 8000);
-  };
+  // const handleCSS3DCoinRain = () => {
+  //   // 切換 CSS 3D 金幣雨的顯示狀態
+  //   setShowCSS3DCoins(true);
+  //   setTimeout(() => {
+  //     setShowCSS3DCoins(false);
+  //   }, 8000);
+  // };
 
   // 定義背景樣式
   const appStyle = showCoins
