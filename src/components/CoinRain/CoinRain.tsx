@@ -169,13 +169,13 @@ const generateDistributedSizes = (
  * 主要金幣雨組件
  *
  * @param count 金幣數量
- * @param resetAtSecond 在第幾秒重頭播放
+//  * @param resetAtSecond 在第幾秒重頭播放
  * @param showAwardPlayers 是否顯示獲獎玩家，預設為 true
  * @param animationSpeed 金幣動畫速度，預設為標準速度 (當設定時會覆蓋平均分配的速度)
  */
 export const CoinRain = ({
   count = 30,
-  resetAtSecond,
+  // resetAtSecond,
   showAwardPlayers = true,
   animationSpeed,
   size,
@@ -279,7 +279,7 @@ export const CoinRain = ({
         <Coin
           key={seed}
           initialStyle={coinStyles[index]} // 使用預先產生的樣式
-          resetAtSecond={resetAtSecond}
+          // resetAtSecond={resetAtSecond}
           onAnimationEnd={() => handleCoinAnimationEnd(index)}
           animationSpeed={animationSpeed || coinSpeeds[index]} // 若提供全域速度設定則使用該設定，否則使用平均分配的速度
           size={size || coinSizes[index]} // 支援全域或分配尺寸

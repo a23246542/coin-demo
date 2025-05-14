@@ -15,7 +15,7 @@ function App() {
     // 切換金幣雨的顯示狀態
     setShowCoins(true);
     setTimeout(() => {
-      // setShowCoins(false);
+      setShowCoins(false);
     }, 8000);
   };
 
@@ -45,7 +45,7 @@ function App() {
       {showCoins && (
         <CoinRain
           count={coinCount}
-          resetAtSecond={resetTime}
+          // resetAtSecond={resetTime}
           showAwardPlayers={true}
         />
       )}
@@ -58,7 +58,7 @@ function App() {
       {!showCoins && (
         <div className="container flex flex-col items-center justify-start flex-1 w-full h-full text-[#f7b918] bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1a] overflow-auto px-4 py-6">
           <h1 className="text-lg mt-4 mb-3 text-[#f7b918] flex items-center justify-center gap-2 font-bold">
-            金幣雨展示
+            {/* 金幣雨展示 */}
           </h1>
           <p className="mb-8 text-base tracking-wide">
             {coinCount} 個金幣同時掉落的效果
