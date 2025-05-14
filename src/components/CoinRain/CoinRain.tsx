@@ -20,6 +20,7 @@ const generateUniqueId = (): string => {
  * 為單個金幣產生隨機樣式 (此函式應與您先前版本中定義的保持一致)
  * @param index - 金幣的索引，可用於實現更均勻的分布
  * @param totalCoins - 金幣總數
+ * @param delay - 控制是否套用初始動畫延遲。true (預設) 表示套用隨機延遲；false 表示立即開始（例如金幣重生時）
  * @returns React.CSSProperties 物件
  */
 const generateCoinStyle = (
@@ -37,14 +38,23 @@ const generateCoinStyle = (
   )}%`;
 
   // 2. 動畫延遲 (animationDelay): 實現錯落有致的開始時間
-  const baseDelayFactor = 0.1; // 稍微減小索引對基礎延遲的影響
-  // const baseDelay = (index % 5) * baseDelayFactor;
-  const baseDelay = (index % 10) * baseDelayFactor;
-  const randomDelayOffset = Math.random() * 2.5;
-  const animationDelay = delay ? `${baseDelay + randomDelayOffset}s` : "0s";
+  let animationDelay: string;
+  if (delay) {
+    // 對於第一批金幣，增加 randomDelayOffset 的範圍，使延遲分布更廣
+    const baseDelayFactor = 0.05; // 降低基礎延遲因子，讓金幣分布更平均
+    const baseDelay = (index % 15) * baseDelayFactor; // 擴大分組範圍
+
+    // 隨機延遲與金幣總數掛鉤，提供更分散的開始時間
+    const randomDelayOffset = Math.random() * (totalCoins * 0.15);
+    animationDelay = `${baseDelay + randomDelayOffset}s`;
+  } else {
+    // 對於重生的金幣，不套用延遲，直接開始動畫
+    animationDelay = "0s";
+  }
 
   // 3. 動畫持續時間 (animationDuration): 金幣落下的速度
-  const animationDuration = `${2.5 + Math.random() * 2}s`; // 3.5 到 5.5 秒
+  // 擴大隨機範圍，使金幣在垂直方向的分布更加錯落有致
+  const animationDuration = `${2.0 + Math.random() * 3.0}s`; // 2.0 到 5.0 秒
 
   // 4. 旋轉角度 (transform)
   const randomRotation = Math.random() * 360;
