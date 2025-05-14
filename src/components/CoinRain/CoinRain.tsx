@@ -4,7 +4,8 @@ import AwardWinningPlayer from "../AwardWinningPlayer";
 import Coin from "./Coin"; // 從 Coin 資料夾引入 - 改為資料夾匯入
 
 // 導入型別
-import { CoinRainProps, AwardPlayer, CoinAnimationSpeed } from "./types";
+import { CoinAnimationSpeed, CoinSize } from "./Coin/types";
+import { CoinRainProps, AwardPlayer } from "./types";
 
 /**
  * 產生唯一識別符的輔助函式
@@ -94,8 +95,8 @@ const generateCoinStyle = (
     left,
     animationDelay,
     animationDuration,
-    width: "140px",
-    height: "140px",
+    // width: "140px",
+    // height: "140px",
     transform,
     zIndex: randomZIndex,
     // opacity: depthOpacity, // 如果需要深度感
@@ -138,6 +139,33 @@ const generateDistributedSpeeds = (
 };
 
 /**
+ * 產生平均分配的金幣尺寸陣列
+ *
+ * @param count 需要產生的尺寸陣列長度
+ * @param randomize 是否隨機排列尺寸（預設為 false，按順序平均分配）
+ * @returns 包含平均分配的金幣尺寸陣列
+ */
+const generateDistributedSizes = (
+  count: number,
+  randomize: boolean = false
+): CoinSize[] => {
+  const sizes: CoinSize[] = [];
+  const smallCount = Math.floor(count / 3);
+  const mediumCount = Math.floor(count / 3);
+  const largeCount = count - smallCount - mediumCount;
+  sizes.push(...Array(smallCount).fill(CoinSize.Small));
+  sizes.push(...Array(mediumCount).fill(CoinSize.Medium));
+  sizes.push(...Array(largeCount).fill(CoinSize.Large));
+  if (randomize && count > 1) {
+    for (let i = sizes.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [sizes[i], sizes[j]] = [sizes[j], sizes[i]];
+    }
+  }
+  return sizes;
+};
+
+/**
  * 主要金幣雨組件
  *
  * @param count 金幣數量
@@ -150,6 +178,7 @@ export const CoinRain = ({
   resetAtSecond,
   showAwardPlayers = true,
   animationSpeed,
+  size,
 }: CoinRainProps) => {
   // 建立金幣種子陣列，管理每個金幣的唯一識別符
   const [coinSeeds, setCoinSeeds] = useState<string[]>(() =>
@@ -164,6 +193,12 @@ export const CoinRain = ({
   // 使用 useMemo 產生平均分配的速度陣列
   const coinSpeeds = useMemo<CoinAnimationSpeed[]>(
     () => generateDistributedSpeeds(count, true), // 使用隨機排列增加視覺多樣性
+    [count]
+  );
+
+  // 產生尺寸陣列
+  const coinSizes = useMemo<CoinSize[]>(
+    () => generateDistributedSizes(count, true),
     [count]
   );
 
@@ -247,6 +282,7 @@ export const CoinRain = ({
           resetAtSecond={resetAtSecond}
           onAnimationEnd={() => handleCoinAnimationEnd(index)}
           animationSpeed={animationSpeed || coinSpeeds[index]} // 若提供全域速度設定則使用該設定，否則使用平均分配的速度
+          size={size || coinSizes[index]} // 支援全域或分配尺寸
         />
       ))}
 

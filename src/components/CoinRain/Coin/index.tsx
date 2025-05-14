@@ -3,10 +3,22 @@ import { useMemo, useRef, useEffect, useState, useCallback } from "react";
 import { DotLottieReact, DotLottie } from "@lottiefiles/dotlottie-react";
 
 // 導入型別和常數
-import { CoinProps, AnimationInfo, FrameEvent } from "./types";
+import {
+  CoinProps,
+  AnimationInfo,
+  FrameEvent,
+  CoinSize,
+  CoinAnimationSpeed,
+} from "./types";
 import { COIN_LOTTIE_SOURCES } from "./constants";
 import { calculateDuration, resetAnimation } from "./animation";
-import { CoinAnimationSpeed } from "../types";
+
+// 金幣尺寸對應表
+const COIN_SIZE_MAP = {
+  [CoinSize.Small]: { width: "120px", height: "120px" },
+  [CoinSize.Medium]: { width: "140px", height: "140px" },
+  [CoinSize.Large]: { width: "160px", height: "160px" },
+};
 
 /**
  * 單個金幣組件
@@ -15,12 +27,14 @@ import { CoinAnimationSpeed } from "../types";
  * @param onAnimationEnd 金幣 CSS 動畫完成時的回調函式
  * @param initialStyle 金幣的初始樣式
  * @param animationSpeed 指定金幣 Lottie 動畫的速度版本 (快中慢)
+ * @param size 指定金幣尺寸 (小中大)
  */
 const Coin = ({
   resetAtSecond: propResetAtSecond,
   onAnimationEnd,
   initialStyle,
   animationSpeed = CoinAnimationSpeed.Default, // 預設使用標準速度
+  size = CoinSize.Medium, // 預設中型
 }: CoinProps) => {
   // 根據 animationSpeed 選擇 Lottie 來源
   const selectedLottieSrc = useMemo(() => {
@@ -186,10 +200,16 @@ const Coin = ({
     }
   }, [onAnimationEnd]);
 
+  // 依據 size 取得尺寸 style
+  const sizeStyle = useMemo(
+    () => COIN_SIZE_MAP[size as CoinSize] || COIN_SIZE_MAP[CoinSize.Medium],
+    [size]
+  );
+
   return (
     <div
       className="coin absolute top-[-100px] coin-animation"
-      style={initialStyle}
+      style={{ ...initialStyle, ...sizeStyle }}
       onAnimationEnd={handleAnimationEnd}
     >
       <DotLottieReact

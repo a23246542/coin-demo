@@ -9,7 +9,8 @@ import {
   DotLottieWithData,
   FrameEvent,
   CoinAnimationSpeed,
-} from "./types";
+  CoinSize,
+} from "./Coin/types";
 import { COIN_LOTTIE_SOURCES } from "./constants";
 
 /**
