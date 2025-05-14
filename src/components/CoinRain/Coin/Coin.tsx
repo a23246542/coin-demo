@@ -262,7 +262,7 @@ const Coin = ({
 
   return (
     <div
-      className="coin absolute top-[-100px] coin-animation"
+      className="coin absolute top-[-160px] coin-animation"
       style={{ ...initialStyle, ...sizeStyle }}
       onAnimationEnd={handleAnimationEnd}
       onAnimationStart={handleCssAnimationStart} // 監聽 CSS 動畫開始
