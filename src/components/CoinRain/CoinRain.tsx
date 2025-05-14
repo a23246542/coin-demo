@@ -1,8 +1,7 @@
 // 導入必要的依賴
 import React, { useMemo, useState, useCallback, useEffect } from "react"; // 引入 React
 import AwardWinningPlayer from "../AwardWinningPlayer";
-import Coin from "./Coin"; // 改為具名匯入
-// import { Coin } from "./Coin"; // 確保 Coin.tsx 中 export const Coin
+import Coin from "./Coin"; // 從 Coin 資料夾引入 - 改為資料夾匯入
 
 // 導入型別
 import { CoinRainProps, AwardPlayer, CoinAnimationSpeed } from "./types";
@@ -17,11 +16,11 @@ const generateUniqueId = (): string => {
 };
 
 /**
- * 為單個金幣產生隨機樣式 (此函式應與您先前版本中定義的保持一致)
- * @param index - 金幣的索引，可用於實現更均勻的分布
+ * 為單個金幣產生隨機樣式
+ * @param index - 金幣的索引，用於實現更均勻的分布
  * @param totalCoins - 金幣總數
  * @param delay - 控制是否套用初始動畫延遲。true (預設) 表示套用隨機延遲；false 表示立即開始（例如金幣重生時）
- * @returns React.CSSProperties 物件
+ * @returns 金幣的 CSS 樣式物件
  */
 const generateCoinStyle = (
   index: number,
@@ -104,29 +103,68 @@ const generateCoinStyle = (
 };
 
 /**
+ * 產生平均分配的金幣動畫速度陣列
+ *
+ * @param count 需要產生的速度陣列長度
+ * @param randomize 是否隨機排列速度（預設為 false，按順序平均分配）
+ * @returns 包含平均分配的動畫速度陣列
+ */
+const generateDistributedSpeeds = (
+  count: number,
+  randomize: boolean = false
+): CoinAnimationSpeed[] => {
+  // 建立三種速度類型的均勻分配
+  const speeds: CoinAnimationSpeed[] = [];
+
+  // 計算每種速度應該有多少個
+  const fastCount = Math.floor(count / 3);
+  const mediumCount = Math.floor(count / 3);
+  const slowCount = count - fastCount - mediumCount; // 確保總數等於 count
+
+  // 填充速度陣列
+  speeds.push(...Array(fastCount).fill(CoinAnimationSpeed.Fast));
+  speeds.push(...Array(mediumCount).fill(CoinAnimationSpeed.Medium));
+  speeds.push(...Array(slowCount).fill(CoinAnimationSpeed.Slow));
+
+  // 如果需要隨機排列，使用 Fisher-Yates 洗牌演算法
+  if (randomize && count > 1) {
+    for (let i = speeds.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [speeds[i], speeds[j]] = [speeds[j], speeds[i]]; // 交換元素
+    }
+  }
+
+  return speeds;
+};
+
+/**
  * 主要金幣雨組件
  *
  * @param count 金幣數量
  * @param resetAtSecond 在第幾秒重頭播放
  * @param showAwardPlayers 是否顯示獲獎玩家，預設為 true
- * @param animationSpeed 金幣動畫速度，預設為標準速度
+ * @param animationSpeed 金幣動畫速度，預設為標準速度 (當設定時會覆蓋平均分配的速度)
  */
 export const CoinRain = ({
   count = 30,
   resetAtSecond,
   showAwardPlayers = true,
-  animationSpeed = CoinAnimationSpeed.Default,
+  animationSpeed,
 }: CoinRainProps) => {
-  // console.log("CoinRain", { count, resetAtSecond, showAwardPlayers });
-
   // 建立金幣種子陣列，管理每個金幣的唯一識別符
   const [coinSeeds, setCoinSeeds] = useState<string[]>(() =>
     Array.from({ length: count }, () => generateUniqueId())
   );
 
-  // 建立金幣樣式陣列，預先產生每個金幣的樣式
+  // 建立金幣樣式陣列
   const [coinStyles, setCoinStyles] = useState<React.CSSProperties[]>(() =>
     Array.from({ length: count }, (_, i) => generateCoinStyle(i, count))
+  );
+
+  // 使用 useMemo 產生平均分配的速度陣列
+  const coinSpeeds = useMemo<CoinAnimationSpeed[]>(
+    () => generateDistributedSpeeds(count, true), // 使用隨機排列增加視覺多樣性
+    [count]
   );
 
   // 當金幣數量 (count prop) 改變時，重新初始化種子和樣式
@@ -135,6 +173,7 @@ export const CoinRain = ({
     setCoinStyles(
       Array.from({ length: count }, (_, i) => generateCoinStyle(i, count))
     );
+    // 注意：coinSpeeds 已通過 useMemo 自動更新，不需在此處更新
   }, [count]);
 
   // 金幣 CSS 動畫結束時的回調函式
@@ -146,15 +185,18 @@ export const CoinRain = ({
         newSeeds[index] = generateUniqueId(); // 產生新種子
         return newSeeds;
       });
-      // 同時更新該金幣的樣式，確保重生後的金幣有新的隨機樣式
+
+      // 更新該金幣的樣式，確保重生後的金幣有新的隨機樣式
       setCoinStyles((prevStyles) => {
         const newStyles = [...prevStyles];
         newStyles[index] = generateCoinStyle(index, count, false); // 為重生的金幣產生新樣式
         return newStyles;
       });
+
+      // 注意：不需要更新速度，因為我們希望每個位置的速度保持一致
     },
     [count]
-  ); // count 是 generateCoinStyle 的依賴
+  ); // count 是 generateCoinStyleWithSpeed 的依賴
 
   // 使用 useMemo 產生獲獎玩家假資料
   const mockAwardPlayers = useMemo<AwardPlayer[]>(() => {
@@ -204,7 +246,7 @@ export const CoinRain = ({
           initialStyle={coinStyles[index]} // 使用預先產生的樣式
           resetAtSecond={resetAtSecond}
           onAnimationEnd={() => handleCoinAnimationEnd(index)}
-          animationSpeed={animationSpeed} // 傳遞動畫速度參數
+          animationSpeed={animationSpeed || coinSpeeds[index]} // 若提供全域速度設定則使用該設定，否則使用平均分配的速度
         />
       ))}
 

@@ -11,4 +11,6 @@ export default defineConfig({
     outDir: "dist",
   },
   plugins: [react()],
+  // 新增此行來明確指定 .lottie 檔案為靜態資源
+  assetsInclude: ["**/*.lottie"],
 });

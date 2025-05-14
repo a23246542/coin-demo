@@ -1,15 +1,18 @@
-// 金幣 Lottie 動畫來源
-// 不同速度版本的金幣 Lottie 動畫資源
+// 使用 import 明確引入靜態資源
+import coinFast from './lottie/90fps2s.lottie';
+import coinMedium from './lottie/60fps3s.lottie';  
+import coinSlow from './lottie/45fps4s.lottie';
+
+// 金幣 Lottie 動畫來源 - 不同速度版本
 export const COIN_LOTTIE_SOURCES = {
   // 預設動畫源 (60fps 3s)
-  default:
-    "https://lottie.host/33f958a6-8c38-468d-a7a1-9af036113478/fwu8M9Ifnn.lottie",
+  default: coinMedium,
   // 快速版本 (FPS 較高)
-  fast: "您的快速版本動畫 URL",
+  fast: coinFast,
   // 中速版本 (適中 FPS)
-  medium: "您的中速版本動畫 URL",
+  medium: coinMedium,
   // 慢速版本 (FPS 較低)
-  slow: "您的慢速版本動畫 URL",
+  slow: coinSlow
 };
 
 // 為了向下相容，保留原始常數
@@ -24,11 +27,3 @@ export const COIN_LOTTIE_SRC_SLOW = COIN_LOTTIE_SOURCES.slow;
 // "https://lottie.host/11822c63-d1ab-4429-bec7-a5202c212ba4/4VXbEcwOdb.lottie"; //35fps 3s
 // "https://lottie.host/e2b455a7-5733-418b-8b00-e1cf9684394a/ycvPKfDZJS.lottie";
 // "https://lottie.host/931236a4-1a45-4f56-9d26-27bc31fa2683/w1iJh9Vv51.json";
-
-// 從 Coin 子資料夾匯入所有常數
-export * from "./Coin/constants";
-
-// 若有 CoinRain 專屬的常數，可在此定義
-// 例如：
-export const COIN_RAIN_DEFAULT_COUNT = 30;
-export const COIN_RAIN_DEFAULT_RESET_AT_SECOND = 1.2;
