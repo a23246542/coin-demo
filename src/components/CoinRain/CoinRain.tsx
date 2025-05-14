@@ -244,6 +244,16 @@ export const CoinRain = ({
       "https://i.pravatar.cc/150?img=5",
     ];
 
+    // 計算每個玩家的延遲時間，讓他們均速依序落下
+    // 總時間為 5 秒，最後一個玩家結束時間在 5 秒內
+    const totalDuration = 8; // 總時間 5 秒
+    const animationDuration = 5; // 每個玩家動畫持續時間
+    const initialDelay = 1; // 整體延遲 3 秒再開始執行
+    // const delayBetweenPlayers = (totalDuration - animationDuration) / 4; // 玩家之間的延遲間隔
+    // 縮短玩家之間的延遲間隔，讓彼此落下的距離更相近
+    // 調整為更平均的間隔，讓玩家動畫更緊密連續
+    const delayBetweenPlayers = 0.4; // 固定間隔為 0.8 秒
+
     return Array.from({ length: 5 }, (_, i) => ({
       id: i,
       avatarUrl: avatars[i],
@@ -259,15 +269,21 @@ export const CoinRain = ({
         zIndex: 100,
         // transition: "all 0.3s ease-in-out", // 新增 transition 屬性
         // animationDelay: `${0.5 + Math.random() * 1}s`, // 隨機延遲開始 (0.5-1.5秒)
-        animationDelay: `${1 + Math.random() * 2}s`, // 隨機延遲開始 (0.5-1.5秒)
         // animationDuration: `${5 + Math.random() * 2}s`, // 隨機落下時間 (5-7秒)
         // animationDuration: `${4 + Math.random() * 2}s`, // 隨機落下時間 (5-7秒)
-        animationDuration: `${4}s`, // 隨機落下時間 (5-7秒)
         // animationTimingFunction: "cubic-bezier(0.6, 0.01, 0.4, 0.99)", // 前後快中間更慢的時間函數
-        animationTimingFunction: "cubic-bezier(0.6, 0.4, 1, 0.1)", // 前後快中間更慢的時間函數
+        // animationTimingFunction: "cubic-bezier(0.6, 0.4, 1, 0.1)", // 原本是這個 前後快中間更慢的時間函數
         // animationTimingFunction: "cubic-bezier(.54,.035,1,.1)", // 前後快中間更慢的時間函數
         // animationTimingFunction: "cubic-bezier(0.6, 0.2, 0.9, 0.6)", // 前後快中間更慢的時間函數
         // animationTimingFunction: "cubic-bezier(0.4, 0, 0.6, 1)", // 前後快中間更慢的時間函數
+
+        // animationDelay: `${1 + Math.random() * 2}s`, // 隨機延遲開始 (0.5-1.5秒)
+        // animationDuration: `${4}s`, // 隨機落下時間 (5-7秒)
+
+        animationDelay: `${initialDelay + i * delayBetweenPlayers}s`, // 整體延遲 3 秒後依序開始：3s, 3.8s, 4.6s, 5.4s, 6.2s
+        animationDuration: `${animationDuration}s`, // 固定持續時間
+        // animationTimingFunction: "cubic-bezier(0.3, 0.7, 0.7, 0.3)",
+        animationTimingFunction: "ease-in",
       },
     }));
   }, []); // 空依賴數組，只在組件初始化時建立一次
