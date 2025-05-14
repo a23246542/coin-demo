@@ -8,19 +8,23 @@ import {
   AnimationInfo,
   DotLottieWithData,
   FrameEvent,
+  CoinAnimationSpeed,
 } from "./types";
-import { COIN_LOTTIE_SRC } from "./constants";
+import { COIN_LOTTIE_SOURCES } from "./constants";
 
 /**
  * 單個金幣組件
  *
  * @param resetAtSecond 指定在第幾秒重頭播放動畫 目前測試1.2秒剛好
  * @param onAnimationEnd 金幣 CSS 動畫完成時的回調函式
+ * @param initialStyle 金幣的初始樣式
+ * @param animationSpeed 指定金幣 Lottie 動畫的速度版本 (快中慢)
  */
 const Coin = ({
   resetAtSecond: propResetAtSecond,
   onAnimationEnd,
   initialStyle,
+  animationSpeed = CoinAnimationSpeed.Default, // 預設使用標準速度
 }: CoinProps) => {
   // 為每個金幣生成隨機特性，使落下效果更自然
   const style = useMemo(() => {
@@ -47,6 +51,11 @@ const Coin = ({
       // opacity: depthOpacity,
     };
   }, []);
+
+  // 根據 animationSpeed 選擇 Lottie 來源
+  const selectedLottieSrc = useMemo(() => {
+    return COIN_LOTTIE_SOURCES[animationSpeed] || COIN_LOTTIE_SOURCES.default;
+  }, [animationSpeed]);
 
   // 使用 state 儲存 DotLottie 實例，確保在 useEffect 中能正確取得
   const [lottieInstance, setLottieInstance] = useState<DotLottie | null>(null);
@@ -320,7 +329,7 @@ const Coin = ({
       onAnimationEnd={handleAnimationEnd}
     >
       <DotLottieReact
-        src={COIN_LOTTIE_SRC}
+        src={selectedLottieSrc}
         autoplay
         style={{ width: "100%", height: "100%" }}
         dotLottieRefCallback={dotLottieRefCallback}

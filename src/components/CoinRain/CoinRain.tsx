@@ -5,7 +5,7 @@ import Coin from "./Coin"; // 改為具名匯入
 // import { Coin } from "./Coin"; // 確保 Coin.tsx 中 export const Coin
 
 // 導入型別
-import { CoinRainProps, AwardPlayer } from "./types";
+import { CoinRainProps, AwardPlayer, CoinAnimationSpeed } from "./types";
 
 /**
  * 產生唯一識別符的輔助函式
@@ -109,11 +109,13 @@ const generateCoinStyle = (
  * @param count 金幣數量
  * @param resetAtSecond 在第幾秒重頭播放
  * @param showAwardPlayers 是否顯示獲獎玩家，預設為 true
+ * @param animationSpeed 金幣動畫速度，預設為標準速度
  */
 export const CoinRain = ({
   count = 30,
   resetAtSecond,
   showAwardPlayers = true,
+  animationSpeed = CoinAnimationSpeed.Default,
 }: CoinRainProps) => {
   // console.log("CoinRain", { count, resetAtSecond, showAwardPlayers });
 
@@ -197,12 +199,12 @@ export const CoinRain = ({
     <div className="coin-rain-container fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
       {/* 金幣雨 - 使用種子作為 key，每當種子變化時會重建金幣 */}
       {coinSeeds.map((seed, index) => (
-        // @ts-ignore TODO: 確保 CoinProps 中有 initialStyle 且類型正確 -> 已在 types.ts 中修正
         <Coin
           key={seed}
           initialStyle={coinStyles[index]} // 使用預先產生的樣式
           resetAtSecond={resetAtSecond}
           onAnimationEnd={() => handleCoinAnimationEnd(index)}
+          animationSpeed={animationSpeed} // 傳遞動畫速度參數
         />
       ))}
 
