@@ -28,14 +28,42 @@ const generateCoinStyle = (
   totalCoins: number,
   delay: boolean = true
 ): React.CSSProperties => {
-  // 1. 水平位置 (left): 嘗試更均勻地分布金幣
-  const segmentWidth = 100 / (totalCoins > 0 ? totalCoins + 1 : 1); // 防止 totalCoins 為 0 的情況
-  const baseLeftPercentage = segmentWidth * (index + 1);
-  const randomLeftOffset = (Math.random() - 0.5) * (segmentWidth / 2);
-  const left = `${Math.max(
-    5,
-    Math.min(95, baseLeftPercentage + randomLeftOffset)
-  )}%`;
+  // 金幣分布：85% 集中在中間區域，15% 分布於兩側
+  const centralProbability = 0.85; // 85% 的金幣集中在中間區域
+  const isCentralCoin = Math.random() < centralProbability;
+
+  let calculatedLeftPercent: number;
+
+  if (isCentralCoin) {
+    // 中間區域 (10% - 70%)
+    const minCentralPercent = 10;
+    const maxCentralPercent = 70;
+    const centralRangeWidth = maxCentralPercent - minCentralPercent;
+
+    // 在中間區域均勻分布金幣
+    const segmentWidth = centralRangeWidth / (totalCoins > 0 ? totalCoins : 1);
+    const basePercentInCentralRange =
+      minCentralPercent + segmentWidth * index * centralProbability;
+
+    // 加入隨機偏移，讓分布更自然
+    const randomOffset = (Math.random() - 0.5) * segmentWidth;
+    calculatedLeftPercent = Math.max(
+      minCentralPercent,
+      Math.min(maxCentralPercent, basePercentInCentralRange + randomOffset)
+    );
+  } else {
+    // 兩側區域
+    const isLeftSide = Math.random() < 0.5;
+    if (isLeftSide) {
+      // 左側區域 (5% - 20%)
+      calculatedLeftPercent = 5 + Math.random() * 15;
+    } else {
+      // 右側區域 (80% - 95%)
+      calculatedLeftPercent = 80 + Math.random() * 15;
+    }
+  }
+
+  const left = `${calculatedLeftPercent}%`;
 
   // 2. 動畫延遲 (animationDelay): 實現錯落有致的開始時間
   let animationDelay: string;
