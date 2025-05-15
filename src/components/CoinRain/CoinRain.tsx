@@ -273,6 +273,25 @@ export const CoinRain = ({
     const rightRangeStart = midPoint + 5; // 保留一個中間間隔，避免太靠近中間
     const rightRangeEnd = maxLeft;
 
+    // 定義五種金額產生器
+    const amountGenerators: (() => number)[] = [
+      () => Math.floor(Math.random() * 900) + 100, // 百位數
+      () => Math.floor(Math.random() * 9000) + 1000, // 千位數
+      () => Math.floor(Math.random() * 90000) + 10000, // 萬位數
+      () => Math.floor(Math.random() * 900000) + 100000, // 十萬位數
+      () => Math.floor(Math.random() * 99000000) + 1000000, // 千萬位數
+    ];
+
+    // 隨機排序金額產生器 (Fisher-Yates shuffle)
+    const shuffledAmountGenerators = [...amountGenerators];
+    for (let k = shuffledAmountGenerators.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [shuffledAmountGenerators[k], shuffledAmountGenerators[j]] = [
+        shuffledAmountGenerators[j],
+        shuffledAmountGenerators[k],
+      ];
+    }
+
     return Array.from({ length: numPlayers }, (_, i) => {
       let currentLeftPercent: number;
       // 將奇偶判斷反轉，讓第一個玩家(i=0)歸類為右側
@@ -303,10 +322,13 @@ export const CoinRain = ({
         Math.min(currentLeftPercent, maxLeft)
       );
 
+      // 從隨機排序的產生器中取得金額
+      const amount = shuffledAmountGenerators[i]();
+
       return {
         id: i,
         avatarUrl: avatars[i],
-        amount: Math.floor(Math.random() * 500) + 100,
+        amount: amount,
         style: {
           position: "absolute" as const,
           left: `${currentLeftPercent}%`,
@@ -334,7 +356,7 @@ export const CoinRain = ({
   return (
     <div className="coin-rain-container fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
       {/* 金幣雨 - 使用種子作為 key，每當種子變化時會重建金幣 */}
-      {coinSeeds.map((seed, index) => (
+      {/* {coinSeeds.map((seed, index) => (
         <Coin
           key={seed}
           initialStyle={coinStyles[index]} // 使用預先產生的樣式
@@ -343,7 +365,7 @@ export const CoinRain = ({
           animationSpeed={animationSpeed || coinSpeeds[index]} // 若提供全域速度設定則使用該設定，否則使用平均分配的速度
           size={size || coinSizes[index]} // 支援全域或分配尺寸
         />
-      ))}
+      ))} */}
 
       {/* 獲獎玩家 */}
       {showAwardPlayers &&
