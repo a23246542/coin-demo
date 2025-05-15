@@ -10,7 +10,7 @@ function App() {
   const [showCSS3DCoins, setShowCSS3DCoins] = useState(false);
   const [coinCount, setCoinCount] = useState(30);
   const [resetTime, setResetTime] = useState(1.2);
-  const timerRef = useRef<NodeJS.Timeout | null>(null); // 用於儲存計時器 id
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null); // 用於儲存計時器 id
 
   const handleCoinRain = () => {
     // 切換金幣雨的顯示狀態
@@ -21,7 +21,10 @@ function App() {
     timerRef.current = setTimeout(() => {
       setShowCoins(false);
       timerRef.current = null;
-      window.gc?.();
+      // 安全地呼叫垃圾回收（若瀏覽器支援）
+      if (typeof window !== 'undefined' && 'gc' in window) {
+        (window as any).gc?.();
+      }
     }, 7000);
   };
 
