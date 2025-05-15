@@ -5,7 +5,7 @@ import Coin from "./Coin"; // 從 Coin 資料夾引入 - 改為資料夾匯入
 
 // 導入型別
 import { CoinAnimationSpeed, CoinSize } from "./Coin/types";
-import { CoinRainProps, AwardPlayer } from "./types";
+import { CoinRainProps, AwardPlayer, CSSPropertiesWithVars } from "./types";
 
 /**
  * 產生唯一識別符的輔助函式
@@ -247,7 +247,7 @@ export const CoinRain = ({
     // 計算每個玩家的延遲時間，讓他們均速依序落下
     // 總時間為 5 秒，最後一個玩家結束時間在 5 秒內
     const totalDuration = 8; // 總時間 5 秒
-    const animationDuration = 5; // 每個玩家動畫持續時間
+    const animationDuration = 3; // 每個玩家動畫持續時間
     const initialDelay = 1; // 整體延遲 3 秒再開始執行
     // const delayBetweenPlayers = (totalDuration - animationDuration) / 4; // 玩家之間的延遲間隔
     // 縮短玩家之間的延遲間隔，讓彼此落下的距離更相近
@@ -260,11 +260,16 @@ export const CoinRain = ({
       amount: Math.floor(Math.random() * 500) + 100,
       style: {
         position: "absolute" as const,
-        left: `${Math.random() * 60 + 10}%`, // 20% 到 80% 之間隨機位置
+        left: `${Math.random() * 60 + 10}%`, // 20% 到 80%// top: "-100px",
+        // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
+        // 之間隨機位置
         // top: "-100px",
         // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
         "--rotate-angle-start": `${angles[i]}deg`,
         "--rotate-angle-end": `${angles[i]}deg`,
+        "--fall-duration": `${animationDuration}s`, // 落下持續時間
+        "--fall-delay": `${initialDelay + i * delayBetweenPlayers}s`, // 依序延遲開始
+        "--swing-duration": "3s", // 搖擺週期
         opacity: 1,
         zIndex: 100,
         // transition: "all 0.3s ease-in-out", // 新增 transition 屬性
@@ -280,13 +285,13 @@ export const CoinRain = ({
         // animationDelay: `${1 + Math.random() * 2}s`, // 隨機延遲開始 (0.5-1.5秒)
         // animationDuration: `${4}s`, // 隨機落下時間 (5-7秒)
 
-        animationDelay: `${initialDelay + i * delayBetweenPlayers}s`, // 整體延遲 3 秒後依序開始：3s, 3.8s, 4.6s, 5.4s, 6.2s
-        animationDuration: `${animationDuration}s`, // 固定持續時間
+        // animationDelay: `${initialDelay + i * delayBetweenPlayers}s`, // 整體延遲 3 秒後依序開始：3s, 3.8s, 4.6s, 5.4s, 6.2s
+        // animationDuration: `${animationDuration}s`, // 固定持續時間
         // animationTimingFunction: "cubic-bezier(0.3, 0.7, 0.7, 0.3)",
-        animationTimingFunction: "ease-in",
+        // animationTimingFunction: "ease-in",
       },
     }));
-  }, []); // 空依賴數組，只在組件初始化時建立一次
+  }, []); // 空依賴陣列，只在組件初始化時建立一次
 
   return (
     <div className="coin-rain-container fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
@@ -307,14 +312,33 @@ export const CoinRain = ({
         mockAwardPlayers.map((player) => (
           <div
             key={`player-${player.id}`}
-            className="award-player-animation absolute top-[-100px]"
-            style={player.style}
+            className="award-player-animation-container"
+            style={
+              {
+                // position: "absolute",
+                left: player.style.left,
+                zIndex: player.style.zIndex,
+                opacity: player.style.opacity,
+                "--fall-duration": player.style["--fall-duration"],
+                "--fall-delay": player.style["--fall-delay"],
+              } as CSSPropertiesWithVars
+            }
           >
-            <AwardWinningPlayer
-              avatarUrl={player.avatarUrl}
-              amount={player.amount}
-              className="custom-class"
-            />
+            <div
+              className="award-player-animation"
+              style={
+                {
+                  "--rotate-angle-start": player.style["--rotate-angle-start"],
+                  "--swing-duration": player.style["--swing-duration"],
+                } as CSSPropertiesWithVars
+              }
+            >
+              <AwardWinningPlayer
+                avatarUrl={player.avatarUrl}
+                amount={player.amount}
+                className="custom-class"
+              />
+            </div>
           </div>
         ))}
     </div>

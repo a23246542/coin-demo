@@ -1,6 +1,10 @@
 import { DotLottie } from "@lottiefiles/dotlottie-react";
 import { CoinAnimationSpeed, CoinSize } from "./Coin/types";
 
+export interface CSSPropertiesWithVars extends React.CSSProperties {
+  [key: `--${string}`]: string | number;
+}
+
 // 擴充 DotLottie 型別以取得 animationData 中的幀率屬性
 export type DotLottieWithData = DotLottie & { animationData: { fr: number } };
 
@@ -63,5 +67,5 @@ export interface AwardPlayer {
   id: number; // 唯一標識
   avatarUrl: string; // 頭像 URL
   amount: number; // 獲獎金額
-  style: React.CSSProperties; // 樣式
+  style: CSSPropertiesWithVars; // 樣式
 }

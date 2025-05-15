@@ -7,13 +7,32 @@
     will-change: transform, opacity;
   }
 
-  .award-player-animation {
-    /* @apply will-change-transform animate-[fall-no-rotate_linear_forwards]; */
-    @apply will-change-transform animate-[fall-no-rotate_forwards];
-    /* @apply will-change-transform animate-[fall-no-rotate_forwards_infinite]; */
+  /* 外層元素控制垂直掉落 */
+  .award-player-animation-container {
+    position: absolute;
+    top: -100px;
+    @apply will-change-transform;
     will-change: transform, opacity;
-    /* animation-duration: 6s;
-    animation-delay: 0.3s; */
+    position: absolute;
+    animation-name: fall-no-rotate;
+    animation-duration: var(--fall-duration, 5s);
+    animation-delay: var(--fall-delay, 0s);
+    /* animation-timing-function: ease-in; */
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+  }
+
+  /* 內層元素控制旋轉搖擺 */
+  .award-player-animation {
+    @apply will-change-transform;
+    will-change: transform;
+    animation-name: gentle-swing-rotate;
+    animation-duration: var(--swing-duration, 3s);
+    animation-delay: var(--fall-delay, 0s);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
   }
 
   .preserve-3d {
@@ -91,26 +110,37 @@
     transform: translateY(calc(100vh + 100px)) rotate(360deg);
   }
 }
+
+/* 獲獎玩家的下落動畫 - 保持使用 translateY */
 @keyframes fall-no-rotate {
   0% {
-    transform: translateY(-100px) rotate(var(--rotate-angle-start, 0deg));
-    /* animation-timing-function: cubic-bezier(0.9, 0, 0.1, 1); */
-  }
-  /* 40% {
-    transform: translateY(30svh);
-    animation-timing-function: linear;
+    transform: translateY(-150px);
   }
   90% {
-    transform: translateY(80svh);
-  } */
-  90% {
-    top: calc(100vh - 50px);
+    transform: translateY(calc(100vh - 50px));
   }
   100% {
-    transform: translateY(calc(100svh + 200px))
-      /* transform: translateY(calc(100% + 200px)) */
-      rotate(var(--rotate-angle-end, 0deg));
-    animation-timing-function: ease-out; /* 快速結束 */
+    transform: translateY(calc(100svh + 200px));
+    /* animation-timing-function: ease-out; */ /* 不應在此設定 */
+  }
+}
+
+/* rotate 搖擺動畫，維持初始傾斜角度，並在其基礎上左右緩慢搖擺 */
+@keyframes gentle-swing-rotate {
+  0% {
+    transform: rotate(var(--rotate-angle-start, 0deg));
+  }
+  20% {
+    transform: rotate(calc(var(--rotate-angle-start, 0deg) + 8deg));
+  }
+  50% {
+    transform: rotate(var(--rotate-angle-start, 0deg));
+  }
+  80% {
+    transform: rotate(calc(var(--rotate-angle-start, 0deg) - 8deg));
+  }
+  100% {
+    transform: rotate(var(--rotate-angle-start, 0deg));
   }
 }
 
