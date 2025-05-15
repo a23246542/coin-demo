@@ -259,71 +259,57 @@ export const CoinRain = ({
     // 縮短玩家之間的延遲間隔，讓彼此落下的距離更相近
     // 調整為更平均的間隔，讓玩家動畫更緊密連續
     const delayBetweenPlayers = 0.4; // 固定間隔為 0.8 秒
-    // -------------------------------------------------
+
+    // --- 簡化版：一左一右交錯分配玩家位置 ---
     const numPlayers = 5;
-    const minOverallLeft = 10; // 最小左側百分比
-    const maxOverallLeft = 70; // 最大左側百分比
-    const midPoint = (minOverallLeft + maxOverallLeft) / 2; // 中心點 (40%)
+    // 微調位置分佈稍微往右一點
+    const minLeft = 5; // 最小左側百分比，從 2% 調整為 5%
+    const maxLeft = 65; // 最大左側百分比，從 55% 調整為 65%
+    const midPoint = (minLeft + maxLeft) / 2; // 中心點 (35%)
 
-    // 計算左右兩側的玩家數量
-    const leftPlayerCount = Math.ceil(numPlayers / 2);
-    const rightPlayerCount = Math.floor(numPlayers / 2);
+    // 確保左右區域寬度相等，以改善平衡感
+    const leftRangeStart = minLeft;
+    const leftRangeEnd = midPoint - 5; // 保留一個中間間隔，避免太靠近中間
+    const rightRangeStart = midPoint + 5; // 保留一個中間間隔，避免太靠近中間
+    const rightRangeEnd = maxLeft;
 
-    // 計算左右兩側子區域的寬度
-    const leftSubRangeWidth = midPoint - minOverallLeft; // 左側區域寬度 (30%)
-    const rightSubRangeWidth = maxOverallLeft - midPoint; // 右側區域寬度 (30%)
-
-    // 計算左右兩側每個玩家分配到的區段寬度
-    const leftSegmentWidth =
-      leftPlayerCount > 0 ? leftSubRangeWidth / leftPlayerCount : 0;
-    const rightSegmentWidth =
-      rightPlayerCount > 0 ? rightSubRangeWidth / rightPlayerCount : 0;
-
-    let leftPlayerIter = 0; // 左側玩家計數器
-    let rightPlayerIter = 0; // 右側玩家計數器
-
-    return Array.from({ length: 5 }, (_, i) => {
+    return Array.from({ length: numPlayers }, (_, i) => {
       let currentLeftPercent: number;
+      const isLeftSide = i % 2 === 0; // 偶數在左側，奇數在右側
 
-      if (i % 2 === 0) {
-        // 偶數索引的玩家 (0, 2, 4) 分配到左側
-        const baseLeft = minOverallLeft + leftPlayerIter * leftSegmentWidth;
+      if (isLeftSide) {
+        // 左側區域 - 均勻分佈在左半區
+        const leftSegmentWidth =
+          (leftRangeEnd - leftRangeStart) / Math.ceil(numPlayers / 2);
+        const leftSegmentIndex = Math.floor(i / 2); // 0, 1, 2 分別代表左側的第 1, 2, 3 個位置
+        const baseLeft = leftRangeStart + leftSegmentIndex * leftSegmentWidth;
+        // 在區段內增加隨機性
         currentLeftPercent = baseLeft + Math.random() * leftSegmentWidth;
-        // 確保在左側子區域 [minOverallLeft, midPoint) 內
-        currentLeftPercent = Math.max(
-          minOverallLeft,
-          Math.min(currentLeftPercent, midPoint - 0.01)
-        );
-        leftPlayerIter++;
       } else {
-        // 奇數索引的玩家 (1, 3) 分配到右側
-        const baseRight = midPoint + rightPlayerIter * rightSegmentWidth;
+        // 右側區域 - 均勻分佈在右半區
+        const rightSegmentWidth =
+          (rightRangeEnd - rightRangeStart) / Math.floor(numPlayers / 2);
+        const rightSegmentIndex = Math.floor(i / 2); // 0, 1 分別代表右側的第 1, 2 個位置
+        const baseRight =
+          rightRangeStart + rightSegmentIndex * rightSegmentWidth;
+        // 在區段內增加隨機性
         currentLeftPercent = baseRight + Math.random() * rightSegmentWidth;
-        // 確保在右側子區域 (midPoint, maxOverallLeft] 內
-        currentLeftPercent = Math.max(
-          midPoint + 0.01,
-          Math.min(currentLeftPercent, maxOverallLeft)
-        );
-        rightPlayerIter++;
       }
 
-      // 最後再做一次校驗，確保在 [minOverallLeft, maxOverallLeft] 範圍內
+      // 最後再做一次校驗，確保在允許範圍內
       currentLeftPercent = Math.max(
-        minOverallLeft,
-        Math.min(currentLeftPercent, maxOverallLeft)
+        minLeft,
+        Math.min(currentLeftPercent, maxLeft)
       );
+
       return {
         id: i,
         avatarUrl: avatars[i],
         amount: Math.floor(Math.random() * 500) + 100,
         style: {
           position: "absolute" as const,
-          // left: `${Math.random() * 60 + 10}%`, // 20% 到 80%// top: "-100px",
-          left: `${currentLeftPercent}%`, // 20% 到 80%// top: "-100px",
-          // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
-          // 之間隨機位置
-          // top: "-100px",
-          // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
+          left: `${currentLeftPercent}%`,
+          // ...existing code...
           "--rotate-angle-start": `${angles[i]}deg`,
           "--rotate-angle-end": `${angles[i]}deg`,
           "--fall-duration": `${animationDuration}s`, // 落下持續時間
@@ -339,15 +325,6 @@ export const CoinRain = ({
           // animationTimingFunction: "cubic-bezier(0.6, 0.4, 1, 0.1)", // 原本是這個 前後快中間更慢的時間函數
           // animationTimingFunction: "cubic-bezier(.54,.035,1,.1)", // 前後快中間更慢的時間函數
           // animationTimingFunction: "cubic-bezier(0.6, 0.2, 0.9, 0.6)", // 前後快中間更慢的時間函數
-          // animationTimingFunction: "cubic-bezier(0.4, 0, 0.6, 1)", // 前後快中間更慢的時間函數
-
-          // animationDelay: `${1 + Math.random() * 2}s`, // 隨機延遲開始 (0.5-1.5秒)
-          // animationDuration: `${4}s`, // 隨機落下時間 (5-7秒)
-
-          // animationDelay: `${initialDelay + i * delayBetweenPlayers}s`, // 整體延遲 3 秒後依序開始：3s, 3.8s, 4.6s, 5.4s, 6.2s
-          // animationDuration: `${animationDuration}s`, // 固定持續時間
-          // animationTimingFunction: "cubic-bezier(0.3, 0.7, 0.7, 0.3)",
-          // animationTimingFunction: "ease-in",
         },
       };
     });
@@ -356,7 +333,7 @@ export const CoinRain = ({
   return (
     <div className="coin-rain-container fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
       {/* 金幣雨 - 使用種子作為 key，每當種子變化時會重建金幣 */}
-      {/* {coinSeeds.map((seed, index) => (
+      {coinSeeds.map((seed, index) => (
         <Coin
           key={seed}
           initialStyle={coinStyles[index]} // 使用預先產生的樣式
@@ -365,7 +342,7 @@ export const CoinRain = ({
           animationSpeed={animationSpeed || coinSpeeds[index]} // 若提供全域速度設定則使用該設定，否則使用平均分配的速度
           size={size || coinSizes[index]} // 支援全域或分配尺寸
         />
-      ))} */}
+      ))}
 
       {/* 獲獎玩家 */}
       {showAwardPlayers &&
