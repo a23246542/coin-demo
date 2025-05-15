@@ -29,7 +29,7 @@ const generateCoinStyle = (
   delay: boolean = true
 ): React.CSSProperties => {
   // 金幣分布：85% 集中在中間區域，15% 分布於兩側
-  const centralProbability = 0.85; // 85% 的金幣集中在中間區域
+  const centralProbability = 0.8; // 85% 的金幣集中在中間區域
   const isCentralCoin = Math.random() < centralProbability;
 
   let calculatedLeftPercent: number;
@@ -42,8 +42,11 @@ const generateCoinStyle = (
 
     // 在中間區域均勻分布金幣
     const segmentWidth = centralRangeWidth / (totalCoins > 0 ? totalCoins : 1);
-    const basePercentInCentralRange =
-      minCentralPercent + segmentWidth * index * centralProbability;
+    // const basePercentInCentralRange =
+    //   minCentralPercent + segmentWidth * index * centralProbability;
+    // 修正：移除 * centralProbability，讓金幣在 [minCentralPercent, maxCentralPercent] 範圍內更均勻地基於 index 分布。
+    // 這樣，隨著 index 的增加，金幣的基礎位置會從 minCentralPercent 線性地趨向 maxCentralPercent。
+    const basePercentInCentralRange = minCentralPercent + segmentWidth * index;
 
     // 加入隨機偏移，讓分布更自然
     const randomOffset = (Math.random() - 0.5) * segmentWidth;
@@ -53,14 +56,17 @@ const generateCoinStyle = (
     );
   } else {
     // 兩側區域
-    const isLeftSide = Math.random() < 0.5;
-    if (isLeftSide) {
-      // 左側區域 (5% - 20%)
-      calculatedLeftPercent = 5 + Math.random() * 15;
-    } else {
-      // 右側區域 (80% - 95%)
-      calculatedLeftPercent = 80 + Math.random() * 15;
-    }
+    // const isLeftSide = Math.random() < 0.7;
+    // 兩側區域 - 強制平均分配到左右兩側
+    // 使用 index 和總數來確定左右分配
+    // const isLeftSide = index % 2 === 0; // 使用索引的奇偶性來決定左右
+    // if (isLeftSide) {
+    // 左側區域 (5% - 20%)
+    calculatedLeftPercent = Math.random() * 20;
+    // } else {
+    // 右側區域 (80% - 95%)
+    // calculatedLeftPercent = 80 + Math.random() * 15;
+    // }
   }
 
   const left = `${calculatedLeftPercent}%`;
