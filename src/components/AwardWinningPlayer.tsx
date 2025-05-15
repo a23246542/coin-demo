@@ -26,7 +26,7 @@ const AwardWinningPlayer: React.FC<AwardWinningPlayerProps> = ({
   amount,
   className = "",
 }) => {
-  console.log(`${formatAmountThousandths(amount)}`);
+  // console.log(`${formatAmountThousandths(amount)}`);
 
   return (
     <div

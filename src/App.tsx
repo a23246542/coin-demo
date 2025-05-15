@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import CoinRain from "./components/CoinRain";
 // import CSS3DCoinRain from "./components/CSS3DCoinRain";
 import "./App.css";
@@ -10,14 +10,29 @@ function App() {
   const [showCSS3DCoins, setShowCSS3DCoins] = useState(false);
   const [coinCount, setCoinCount] = useState(30);
   const [resetTime, setResetTime] = useState(1.2);
+  const timerRef = useRef<NodeJS.Timeout | null>(null); // 用於儲存計時器 id
 
   const handleCoinRain = () => {
     // 切換金幣雨的顯示狀態
     setShowCoins(true);
-    setTimeout(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => {
       setShowCoins(false);
-    }, 6000);
+      timerRef.current = null;
+      window.gc?.();
+    }, 7000);
   };
+
+  // 清理計時器，避免記憶體洩漏
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   // const handleCSS3DCoinRain = () => {
   //   // 切換 CSS 3D 金幣雨的顯示狀態
