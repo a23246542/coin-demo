@@ -260,11 +260,11 @@ export const CoinRain = ({
     // 調整為更平均的間隔，讓玩家動畫更緊密連續
     const delayBetweenPlayers = 0.4; // 固定間隔為 0.8 秒
 
-    // --- 簡化版：一左一右交錯分配玩家位置 ---
+    // --- 簡化版：一左一右交錯分配玩家位置，但第一個玩家從右側開始 ---
     const numPlayers = 5;
     // 微調位置分佈稍微往右一點
-    const minLeft = 5; // 最小左側百分比，從 2% 調整為 5%
-    const maxLeft = 65; // 最大左側百分比，從 55% 調整為 65%
+    const minLeft = 5; // 最小左側百分比
+    const maxLeft = 65; // 最大左側百分比
     const midPoint = (minLeft + maxLeft) / 2; // 中心點 (35%)
 
     // 確保左右區域寬度相等，以改善平衡感
@@ -275,7 +275,8 @@ export const CoinRain = ({
 
     return Array.from({ length: numPlayers }, (_, i) => {
       let currentLeftPercent: number;
-      const isLeftSide = i % 2 === 0; // 偶數在左側，奇數在右側
+      // 將奇偶判斷反轉，讓第一個玩家(i=0)歸類為右側
+      const isLeftSide = i % 2 !== 0; // 奇數在左側，偶數在右側
 
       if (isLeftSide) {
         // 左側區域 - 均勻分佈在左半區

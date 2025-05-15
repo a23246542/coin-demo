@@ -131,13 +131,13 @@
     transform: rotate(var(--rotate-angle-start, 0deg));
   }
   20% {
-    transform: rotate(calc(var(--rotate-angle-start, 0deg) + 8deg));
+    transform: rotate(calc(var(--rotate-angle-start, 0deg) + 20deg));
   }
   50% {
     transform: rotate(var(--rotate-angle-start, 0deg));
   }
   80% {
-    transform: rotate(calc(var(--rotate-angle-start, 0deg) - 8deg));
+    transform: rotate(calc(var(--rotate-angle-start, 0deg) - 20deg));
   }
   100% {
     transform: rotate(var(--rotate-angle-start, 0deg));
