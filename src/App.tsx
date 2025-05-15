@@ -16,7 +16,7 @@ function App() {
     setShowCoins(true);
     setTimeout(() => {
       setShowCoins(false);
-    }, 8000);
+    }, 6000);
   };
 
   // const handleCSS3DCoinRain = () => {

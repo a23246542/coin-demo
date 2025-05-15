@@ -356,7 +356,7 @@ export const CoinRain = ({
   return (
     <div className="coin-rain-container fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-10">
       {/* 金幣雨 - 使用種子作為 key，每當種子變化時會重建金幣 */}
-      {/* {coinSeeds.map((seed, index) => (
+      {coinSeeds.map((seed, index) => (
         <Coin
           key={seed}
           initialStyle={coinStyles[index]} // 使用預先產生的樣式
@@ -365,7 +365,7 @@ export const CoinRain = ({
           animationSpeed={animationSpeed || coinSpeeds[index]} // 若提供全域速度設定則使用該設定，否則使用平均分配的速度
           size={size || coinSizes[index]} // 支援全域或分配尺寸
         />
-      ))} */}
+      ))}
 
       {/* 獲獎玩家 */}
       {showAwardPlayers &&
