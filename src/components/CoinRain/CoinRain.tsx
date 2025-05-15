@@ -259,44 +259,98 @@ export const CoinRain = ({
     // 縮短玩家之間的延遲間隔，讓彼此落下的距離更相近
     // 調整為更平均的間隔，讓玩家動畫更緊密連續
     const delayBetweenPlayers = 0.4; // 固定間隔為 0.8 秒
+    // -------------------------------------------------
+    const numPlayers = 5;
+    const minOverallLeft = 10; // 最小左側百分比
+    const maxOverallLeft = 70; // 最大左側百分比
+    const midPoint = (minOverallLeft + maxOverallLeft) / 2; // 中心點 (40%)
 
-    return Array.from({ length: 5 }, (_, i) => ({
-      id: i,
-      avatarUrl: avatars[i],
-      amount: Math.floor(Math.random() * 500) + 100,
-      style: {
-        position: "absolute" as const,
-        left: `${Math.random() * 60 + 10}%`, // 20% 到 80%// top: "-100px",
-        // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
-        // 之間隨機位置
-        // top: "-100px",
-        // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
-        "--rotate-angle-start": `${angles[i]}deg`,
-        "--rotate-angle-end": `${angles[i]}deg`,
-        "--fall-duration": `${animationDuration}s`, // 落下持續時間
-        "--fall-delay": `${initialDelay + i * delayBetweenPlayers}s`, // 依序延遲開始
-        "--swing-duration": "3s", // 搖擺週期
-        opacity: 1,
-        zIndex: 100,
-        // transition: "all 0.3s ease-in-out", // 新增 transition 屬性
-        // animationDelay: `${0.5 + Math.random() * 1}s`, // 隨機延遲開始 (0.5-1.5秒)
-        // animationDuration: `${5 + Math.random() * 2}s`, // 隨機落下時間 (5-7秒)
-        // animationDuration: `${4 + Math.random() * 2}s`, // 隨機落下時間 (5-7秒)
-        // animationTimingFunction: "cubic-bezier(0.6, 0.01, 0.4, 0.99)", // 前後快中間更慢的時間函數
-        // animationTimingFunction: "cubic-bezier(0.6, 0.4, 1, 0.1)", // 原本是這個 前後快中間更慢的時間函數
-        // animationTimingFunction: "cubic-bezier(.54,.035,1,.1)", // 前後快中間更慢的時間函數
-        // animationTimingFunction: "cubic-bezier(0.6, 0.2, 0.9, 0.6)", // 前後快中間更慢的時間函數
-        // animationTimingFunction: "cubic-bezier(0.4, 0, 0.6, 1)", // 前後快中間更慢的時間函數
+    // 計算左右兩側的玩家數量
+    const leftPlayerCount = Math.ceil(numPlayers / 2);
+    const rightPlayerCount = Math.floor(numPlayers / 2);
 
-        // animationDelay: `${1 + Math.random() * 2}s`, // 隨機延遲開始 (0.5-1.5秒)
-        // animationDuration: `${4}s`, // 隨機落下時間 (5-7秒)
+    // 計算左右兩側子區域的寬度
+    const leftSubRangeWidth = midPoint - minOverallLeft; // 左側區域寬度 (30%)
+    const rightSubRangeWidth = maxOverallLeft - midPoint; // 右側區域寬度 (30%)
 
-        // animationDelay: `${initialDelay + i * delayBetweenPlayers}s`, // 整體延遲 3 秒後依序開始：3s, 3.8s, 4.6s, 5.4s, 6.2s
-        // animationDuration: `${animationDuration}s`, // 固定持續時間
-        // animationTimingFunction: "cubic-bezier(0.3, 0.7, 0.7, 0.3)",
-        // animationTimingFunction: "ease-in",
-      },
-    }));
+    // 計算左右兩側每個玩家分配到的區段寬度
+    const leftSegmentWidth =
+      leftPlayerCount > 0 ? leftSubRangeWidth / leftPlayerCount : 0;
+    const rightSegmentWidth =
+      rightPlayerCount > 0 ? rightSubRangeWidth / rightPlayerCount : 0;
+
+    let leftPlayerIter = 0; // 左側玩家計數器
+    let rightPlayerIter = 0; // 右側玩家計數器
+
+    return Array.from({ length: 5 }, (_, i) => {
+      let currentLeftPercent: number;
+
+      if (i % 2 === 0) {
+        // 偶數索引的玩家 (0, 2, 4) 分配到左側
+        const baseLeft = minOverallLeft + leftPlayerIter * leftSegmentWidth;
+        currentLeftPercent = baseLeft + Math.random() * leftSegmentWidth;
+        // 確保在左側子區域 [minOverallLeft, midPoint) 內
+        currentLeftPercent = Math.max(
+          minOverallLeft,
+          Math.min(currentLeftPercent, midPoint - 0.01)
+        );
+        leftPlayerIter++;
+      } else {
+        // 奇數索引的玩家 (1, 3) 分配到右側
+        const baseRight = midPoint + rightPlayerIter * rightSegmentWidth;
+        currentLeftPercent = baseRight + Math.random() * rightSegmentWidth;
+        // 確保在右側子區域 (midPoint, maxOverallLeft] 內
+        currentLeftPercent = Math.max(
+          midPoint + 0.01,
+          Math.min(currentLeftPercent, maxOverallLeft)
+        );
+        rightPlayerIter++;
+      }
+
+      // 最後再做一次校驗，確保在 [minOverallLeft, maxOverallLeft] 範圍內
+      currentLeftPercent = Math.max(
+        minOverallLeft,
+        Math.min(currentLeftPercent, maxOverallLeft)
+      );
+      return {
+        id: i,
+        avatarUrl: avatars[i],
+        amount: Math.floor(Math.random() * 500) + 100,
+        style: {
+          position: "absolute" as const,
+          // left: `${Math.random() * 60 + 10}%`, // 20% 到 80%// top: "-100px",
+          left: `${currentLeftPercent}%`, // 20% 到 80%// top: "-100px",
+          // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
+          // 之間隨機位置
+          // top: "-100px",
+          // transform: `rotate(${angles[i]}deg)`, // 只保留旋轉角度
+          "--rotate-angle-start": `${angles[i]}deg`,
+          "--rotate-angle-end": `${angles[i]}deg`,
+          "--fall-duration": `${animationDuration}s`, // 落下持續時間
+          "--fall-delay": `${initialDelay + i * delayBetweenPlayers}s`, // 依序延遲開始
+          "--swing-duration": "3s", // 搖擺週期
+          opacity: 1,
+          zIndex: 100,
+          // transition: "all 0.3s ease-in-out", // 新增 transition 屬性
+          // animationDelay: `${0.5 + Math.random() * 1}s`, // 隨機延遲開始 (0.5-1.5秒)
+          // animationDuration: `${5 + Math.random() * 2}s`, // 隨機落下時間 (5-7秒)
+          // animationDuration: `${4 + Math.random() * 2}s`, // 隨機落下時間 (5-7秒)
+          // animationTimingFunction: "cubic-bezier(0.6, 0.01, 0.4, 0.99)", // 前後快中間更慢的時間函數
+          // animationTimingFunction: "cubic-bezier(0.6, 0.4, 1, 0.1)", // 原本是這個 前後快中間更慢的時間函數
+          // animationTimingFunction: "cubic-bezier(.54,.035,1,.1)", // 前後快中間更慢的時間函數
+          // animationTimingFunction: "cubic-bezier(0.6, 0.2, 0.9, 0.6)", // 前後快中間更慢的時間函數
+          // animationTimingFunction: "cubic-bezier(0.4, 0, 0.6, 1)", // 前後快中間更慢的時間函數
+
+          // animationDelay: `${1 + Math.random() * 2}s`, // 隨機延遲開始 (0.5-1.5秒)
+          // animationDuration: `${4}s`, // 隨機落下時間 (5-7秒)
+
+          // animationDelay: `${initialDelay + i * delayBetweenPlayers}s`, // 整體延遲 3 秒後依序開始：3s, 3.8s, 4.6s, 5.4s, 6.2s
+          // animationDuration: `${animationDuration}s`, // 固定持續時間
+          // animationTimingFunction: "cubic-bezier(0.3, 0.7, 0.7, 0.3)",
+          // animationTimingFunction: "ease-in",
+        },
+      };
+    });
   }, []); // 空依賴陣列，只在組件初始化時建立一次
 
   return (
